@@ -1,0 +1,13 @@
+import 'package:flutter/cupertino.dart';
+
+class MessageScreen extends StatelessWidget{
+  const MessageScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Message Screen"),
+    );
+  }
+
+}

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "193338624164",
+    "firebase_url": "https://waste-food-management-7425e-default-rtdb.firebaseio.com",
+    "project_id": "waste-food-management-7425e",
+    "storage_bucket": "waste-food-management-7425e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193338624164:android:532b21ccaed786ef38fe31",
+        "android_client_info": {
+          "package_name": "com.example.waste_food_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsjuWL3UiXrV17D_qnuLS4dbBhQEdMRZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
