@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:waste_food_management/app/app_theme.dart';
-
-import '../../../../core/constants/widgets/homescreen_info_card.dart';
+import '../sections/header_section.dart';
+import '../sections/info_cards_section.dart';
+import '../sections/myposts_tab_section.dart';
+import '../sections/community_section.dart';
+import '../sections/donation_history_section.dart';
+import '../sections/faq_section.dart';
+import '../sections/ngo_near_section.dart';
+import '../../../auth/data/model/donation_history_model.dart';
+import '../../../auth/data/model/ngo_model.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -9,67 +15,106 @@ class HomePageScreen extends StatefulWidget {
   static const String routeName = '/home';
 
   @override
-  State<HomePageScreen> createState() => HomePageState();
+  State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
-class HomePageState extends State<HomePageScreen> {
+class _HomePageScreenState extends State<HomePageScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  // Sample Data
+  final donationHistoryList = [
+    DonationHistoryModel(
+      id: "324800",
+      timeAgo: "3 Days Ago",
+      title: "Rice Bowl with curry on",
+      quantity: "10 Plate",
+      status: "Completed",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+    ),
+  ];
+
+  final ngoList = [
+    NgoModel(
+      name: "Sks",
+      distance: "2.5km",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+    ),
+    NgoModel(
+      name: "Hope NGO",
+      distance: "1.2km",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+    ),
+    NgoModel(
+      name: "Helping Hands",
+      distance: "3.0km",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+    ),
+    NgoModel(
+      name: "Food For All",
+      distance: "4.5km",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Column(
-        children: [
-          // Header part
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Greeting Column
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Hi Mandeep", style: AppTheme.heading3),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(text: "You are a ", style: AppTheme.heading2),
-                        TextSpan(
-                          text: "Donar",
-                          style: AppTheme.heading2.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    final double screenHeight = MediaQuery.of(context).size.height * 0.01;
 
-              // Notification Badge
-              Badge(
-                label: const Text("1", style: TextStyle(color: Colors.white)),
-                child: const Icon(Icons.notifications),
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ---------------- Header ----------------
+              HeaderSection(
+                name: "Mandeep",
+                role: "Donor",
+                notificationCount: 1,
               ),
+              SizedBox(height: screenHeight),
+
+              // ---------------- Info Cards ----------------
+              const InfoCardsSection(),
+              SizedBox(height: screenHeight),
+
+              // ---------------- MyPosts Tab ----------------
+              MyPostsTabSection(tabController: _tabController),
+              SizedBox(height: 20),
+
+              // ---------------- Donation History ----------------
+              DonationHistorySection(list: donationHistoryList),
+              SizedBox(height: 20),
+
+              // ---------------- NGOs Near You ----------------
+              NgoNearYouSection(list: ngoList),
+              SizedBox(height: 20),
+
+              // ---------------- Community ----------------
+              const CommunitySection(),
+              SizedBox(height: 20),
+
+              // ---------------- FAQs ----------------
+              const FaqSection(),
+              SizedBox(height: 20),
             ],
           ),
-
-          // Gap
-          SizedBox(height: screenHeight * 0.01), // 2% of screen height
-
-          Row(
-            children: [
-              // card 1
-              Expanded(child: HomeScreenInfoCart(title: 'Donations', value: 500,color: Colors.white.withOpacity(0.6))),
-            //   card 2
-              Expanded(child: HomeScreenInfoCart(title: "Feedback", value: 500, color: AppTheme.primaryColor.withOpacity(0.6),)),
-            //   card 3
-              Expanded(child: HomeScreenInfoCart(title: "Points earned", value: 1000, color: Colors.white.withOpacity(0.6)))
-            ],
-          )
-        ],
+        ),
       ),
     );
   }
 }
-
-

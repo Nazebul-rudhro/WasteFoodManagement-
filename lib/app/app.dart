@@ -19,6 +19,7 @@ class _WasteFoodManagementAppState  extends State<WasteFoodManagementApp>{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: SplashScreenPage.routeName,
       onGenerateRoute: AppRoutes.onGenerate,
       theme: ThemeData(

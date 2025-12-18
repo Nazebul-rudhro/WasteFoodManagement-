@@ -29,13 +29,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Dynamic body
-      body: SingleChildScrollView(
-        child: SafeArea(
+      body: SafeArea(
           child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: pages[currentIndex]),
         ),
-      ),
+
 
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(

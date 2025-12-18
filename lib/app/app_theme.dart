@@ -50,7 +50,7 @@ class AppTheme{
 
   static TextStyle heading3 = GoogleFonts.roboto(
     textStyle: TextStyle(
-        fontSize: 14,
+        fontSize: 15,
         color: Colors.black54
     ),
   );

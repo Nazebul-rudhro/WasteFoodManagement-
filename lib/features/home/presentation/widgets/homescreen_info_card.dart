@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/app_theme.dart';
+import '../../../../app/app_theme.dart';
 
 class HomeScreenInfoCart extends StatelessWidget {
   final String title;
@@ -21,7 +21,7 @@ class HomeScreenInfoCart extends StatelessWidget {
       color: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: EdgeInsets.all(screenHeight * 0.03),
+        padding: EdgeInsets.all(screenHeight * 0.02),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

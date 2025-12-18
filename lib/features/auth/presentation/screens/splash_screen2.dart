@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/login_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/home_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/main_screen.dart';
 
 import '../../../../core/constants/app_image.dart';
-import '../../../../core/constants/widgets/splash_screen.dart';
+import '../../../home/presentation/widgets/splash_screen.dart';
 
 class SplashScreenTwo extends StatelessWidget {
   const SplashScreenTwo({super.key});
