@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/forgot_password.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/login_screen.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/otp_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen2.dart';
 import '../features/home/presentation/screens/home_screen.dart';
@@ -10,6 +12,8 @@ class AppRoutes {
     SplashScreenPage.routeName: (_) => const SplashScreenPage(),
     SplashScreenTwo.routeName: (_) => const SplashScreenTwo(),
     LoginScreen.routeName: (_) => const LoginScreen(),
+    ForgotPasswordScreen.routeName: (_) => ForgotPasswordScreen(),
+    OTPScreen.routeName: (_) => OTPScreen(),
     MainScreen.routeName: (_) => const MainScreen(),
 
 

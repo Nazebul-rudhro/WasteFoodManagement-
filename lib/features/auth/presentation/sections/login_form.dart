@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/forgot_password.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -60,7 +61,9 @@ class _LoginFormState extends State<LoginForm> {
               ],
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+              },
               child: const Text("Forgot Password?"),
             ),
           ],
@@ -68,7 +71,7 @@ class _LoginFormState extends State<LoginForm> {
         const SizedBox(height: 20),
 
         // Login Button
-        LoginButton(buttonName: 'Login',)
+        LoginButton(buttonName: 'Login', buttonAction: () {  },)
         // SizedBox(
         //   width: double.infinity,
         //   height: 50,

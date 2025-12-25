@@ -17,8 +17,8 @@ class SplashScreenTwo extends StatelessWidget {
       subtitle: "Manage your food waste easily ......",
       buttonText: "Next",
       image: AppImage.splashScreen1,
-      onSkip: () => Navigator.pushNamed(context, MainScreen.routeName),
-      onNext: () => Navigator.pushNamed(context, MainScreen.routeName),
+      onSkip: () => Navigator.pushNamed(context, LoginScreen.routeName),
+      onNext: () => Navigator.pushNamed(context, LoginScreen.routeName),
     );
   }
 }
