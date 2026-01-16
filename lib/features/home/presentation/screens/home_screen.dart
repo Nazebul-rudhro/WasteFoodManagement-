@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../app/app_theme.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../sections/header_section.dart';
 import '../sections/info_cards_section.dart';
 import '../sections/myposts_tab_section.dart';
@@ -84,12 +86,25 @@ class _HomePageScreenState extends State<HomePageScreen>
               HeaderSection(
                 name: "Mandeep",
                 role: "Donor",
-                notificationCount: 1,
+                notificationCount: 1, noticicationOnActionTap: () {  },
               ),
               SizedBox(height: screenHeight),
 
               // ---------------- Info Cards ----------------
-              const InfoCardsSection(),
+              InfoCardsSection(
+                title1: "Donations",
+                value1: 120,
+                color1: AppColor.backgrouGray,
+
+                title2: "Feedback",
+                value2: 500,
+                color2: AppData.primaryColor.withOpacity(0.6),
+
+                title3: "Points earned",
+                value3: 1000,
+                color3: AppColor.backgrouGray,
+              ),
+
               SizedBox(height: screenHeight),
 
               // ---------------- MyPosts Tab ----------------
@@ -97,19 +112,19 @@ class _HomePageScreenState extends State<HomePageScreen>
               SizedBox(height: 20),
 
               // ---------------- Donation History ----------------
-              DonationHistorySection(list: donationHistoryList),
+              DonationHistorySection(list: donationHistoryList, onActionTap: () { debugPrint("donation history"); },),
               SizedBox(height: 20),
 
               // ---------------- NGOs Near You ----------------
-              NgoNearYouSection(list: ngoList),
+              NgoNearYouSection(list: ngoList, onActionTap: () { debugPrint("View NGOs Click"); },),
               SizedBox(height: 20),
 
               // ---------------- Community ----------------
-              const CommunitySection(),
+              // const CommunitySection(),
               SizedBox(height: 20),
 
               // ---------------- FAQs ----------------
-              const FaqSection(),
+              // const FaqSection(),
               SizedBox(height: 20),
             ],
           ),

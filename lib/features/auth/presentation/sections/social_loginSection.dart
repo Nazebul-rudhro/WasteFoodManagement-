@@ -9,7 +9,7 @@ class SocialLoginSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Login with", style: AppTheme.heading3),
+        Text("Login with", style: AppData.heading3),
         const SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

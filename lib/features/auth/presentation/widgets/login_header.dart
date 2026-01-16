@@ -8,7 +8,7 @@ class LoginHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       "Login",
-      style: AppTheme.heading1,
+      style: AppData.heading1,
     );
   }
 }

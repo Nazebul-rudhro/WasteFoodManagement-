@@ -37,8 +37,8 @@ class NgoGridItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(data.name, style: AppTheme.heading3),
-                Text(data.distance, style: AppTheme.heading3),
+                Text(data.name, style: AppData.heading3),
+                Text(data.distance, style: AppData.heading3),
               ],
             ),
           ],

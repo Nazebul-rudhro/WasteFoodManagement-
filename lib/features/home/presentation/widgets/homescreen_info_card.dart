@@ -26,9 +26,9 @@ class HomeScreenInfoCart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(title, style: AppTheme.heading3.copyWith(color: Colors.black)),
+            Text(title, style: AppData.heading3.copyWith(color: Colors.black)),
             SizedBox(height: 8),
-            Text(value.toString(), style: AppTheme.heading1.copyWith()),
+            Text(value.toString(), style: AppData.heading1.copyWith()),
           ],
         ),
       ),

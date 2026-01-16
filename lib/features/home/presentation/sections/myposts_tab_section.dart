@@ -15,9 +15,9 @@ class MyPostsTabSection extends StatelessWidget {
           tabAlignment: TabAlignment.start,
           isScrollable: true,
           controller: tabController,
-          labelColor: AppTheme.primaryColor,
+          labelColor: AppData.primaryColor,
           unselectedLabelColor: Colors.grey,
-          indicatorColor: AppTheme.primaryColor,
+          indicatorColor: AppData.primaryColor,
           tabs: const [
             Tab(text: "My Post"),
             Tab(text: "Receivers Requests"),
@@ -38,7 +38,7 @@ class MyPostsTabSection extends StatelessWidget {
                       children: [
                         Text(
                           "Nothing till now",
-                          style: AppTheme.heading2.copyWith(
+                          style: AppData.heading2.copyWith(
                             color: AppColor.black.withOpacity(0.6),
                           ),
                         ),
@@ -50,7 +50,7 @@ class MyPostsTabSection extends StatelessWidget {
                         const SizedBox(height: 15),
                         Text(
                           "Do You Have Some food to donate?",
-                          style: AppTheme.heading2,
+                          style: AppData.heading2,
                         ),
                         const SizedBox(height: 15),
                         ElevatedButton.icon(
@@ -58,7 +58,7 @@ class MyPostsTabSection extends StatelessWidget {
                           icon: const Icon(Icons.add),
                           label: Text(
                             "Create Donation Post",
-                            style: AppTheme.heading2.copyWith(
+                            style: AppData.heading2.copyWith(
                               color: AppColor.white,
                             ),
                           ),
@@ -79,7 +79,7 @@ class MyPostsTabSection extends StatelessWidget {
                 children: [
                   Text(
                     "Receivers Requests Content Here",
-                    style: AppTheme.heading3,
+                    style: AppData.heading3,
                   ),
                 ],
               ),

@@ -6,8 +6,9 @@ import 'package:waste_food_management/app/app_theme.dart';
 
 class DonationHistorySection extends StatelessWidget {
   final List<DonationHistoryModel> list;
+  final VoidCallback onActionTap;
 
-  const DonationHistorySection({super.key, required this.list});
+  const DonationHistorySection({super.key, required this.list, required this.onActionTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +22,13 @@ class DonationHistorySection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Donation History", style: AppTheme.heading2),
-            Text(
-              "View All",
-              style: AppTheme.heading2.copyWith(color: AppColor.primary),
+            Text("Donation History", style: AppData.heading2),
+            GestureDetector(
+              onTap: onActionTap,
+              child: Text(
+                "View All",
+                style: AppData.heading2.copyWith(color: AppColor.primary),
+              ),
             ),
           ],
         ),

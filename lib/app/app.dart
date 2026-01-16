@@ -27,7 +27,7 @@ class _WasteFoodManagementAppState  extends State<WasteFoodManagementApp>{
           Theme.of(context).textTheme,
         ),
       ),
-      darkTheme: AppTheme.themeData,
+      darkTheme: AppData.themeData,
       themeMode: ThemeMode.light,
 
     );

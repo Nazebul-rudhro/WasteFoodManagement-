@@ -55,7 +55,7 @@ class SplashScreen extends StatelessWidget {
               const SizedBox(height: 15),
 
               // Title
-              Text(title, style: AppTheme.heading2),
+              Text(title, style: AppData.heading2),
 
               const SizedBox(height: 10),
 

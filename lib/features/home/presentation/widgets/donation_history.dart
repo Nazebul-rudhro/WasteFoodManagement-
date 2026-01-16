@@ -36,13 +36,13 @@ class DonationHistoryItem extends StatelessWidget {
                 children: [
                   Text(
                     "ID: ${data.id}",
-                    style: AppTheme.heading3.copyWith(
+                    style: AppData.heading3.copyWith(
                       color: AppColor.black,
                     ),
                   ),
                   Text(
                     data.timeAgo,
-                    style: AppTheme.heading3.copyWith(
+                    style: AppData.heading3.copyWith(
                       color: AppColor.black,
                     ),
                   ),
@@ -52,7 +52,7 @@ class DonationHistoryItem extends StatelessWidget {
 
               Text(
                 data.title,
-                style: AppTheme.heading3.copyWith(
+                style: AppData.heading3.copyWith(
                   color: AppColor.black,
                 ),
               ),
@@ -60,7 +60,7 @@ class DonationHistoryItem extends StatelessWidget {
 
               Text(
                 data.quantity,
-                style: AppTheme.heading3.copyWith(
+                style: AppData.heading3.copyWith(
                   color: AppColor.black,
                 ),
               ),
@@ -71,7 +71,7 @@ class DonationHistoryItem extends StatelessWidget {
                 children: [
                   Text(
                     data.status,
-                    style: AppTheme.heading3.copyWith(
+                    style: AppData.heading3.copyWith(
                       color: data.status == "Completed"
                           ? AppColor.lime_green
                           : AppColor.primary,

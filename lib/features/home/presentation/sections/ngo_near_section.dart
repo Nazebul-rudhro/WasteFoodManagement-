@@ -6,8 +6,9 @@ import 'package:waste_food_management/app/app_theme.dart';
 
 class NgoNearYouSection extends StatelessWidget {
   final List<NgoModel> list;
+  final VoidCallback onActionTap;
 
-  const NgoNearYouSection({super.key, required this.list});
+  const NgoNearYouSection({super.key, required this.list, required this.onActionTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,12 @@ class NgoNearYouSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("NGOs Near You", style: AppTheme.heading2),
-            Text("See More",
-                style: AppTheme.heading2.copyWith(color: AppColor.primary)),
+            Text("NGOs Near You", style: AppData.heading2),
+            GestureDetector(
+              onTap: onActionTap,
+              child: Text("See More",
+                  style: AppData.heading2.copyWith(color: AppColor.primary)),
+            ),
           ],
         ),
         const Divider(thickness: 1),

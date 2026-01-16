@@ -5,12 +5,13 @@ class HeaderSection extends StatelessWidget {
   final String name;
   final String role;
   final int notificationCount;
+  final VoidCallback noticicationOnActionTap;
 
   const HeaderSection({
     super.key,
     required this.name,
     required this.role,
-    required this.notificationCount,
+    required this.notificationCount, required this.noticicationOnActionTap,
   });
 
   @override
@@ -21,17 +22,17 @@ class HeaderSection extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Hi $name", style: AppTheme.heading3),
+            Text("Hi $name", style: AppData.heading3),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                     text: "You are a ",
-                    style: AppTheme.heading2,
+                    style: AppData.heading2,
                   ),
                   TextSpan(
                     text: role,
-                    style: AppTheme.heading2.copyWith(
+                    style: AppData.heading2.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.red,
                     ),
@@ -41,12 +42,15 @@ class HeaderSection extends StatelessWidget {
             ),
           ],
         ),
-        Badge(
-          label: Text(
-            "$notificationCount",
-            style: const TextStyle(color: Colors.white),
+        GestureDetector(
+          onTap: noticicationOnActionTap,
+          child: Badge(
+            label: Text(
+              "$notificationCount",
+              style: const TextStyle(color: Colors.white),
+            ),
+            child: const Icon(Icons.notifications),
           ),
-          child: const Icon(Icons.notifications),
         ),
       ],
     );

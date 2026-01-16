@@ -11,12 +11,12 @@ class ForgotPasswordText extends StatelessWidget {
       children: [
         Text(
           "Forgot your password?",
-          style: AppTheme.heading2,
+          style: AppData.heading2,
         ),
         const SizedBox(height: 8),
         Text(
           "Enter your mobile number or email ID\nWe will send you an OTP to reset your password.",
-          style: AppTheme.heading3.copyWith(
+          style: AppData.heading3.copyWith(
             color: Colors.grey,
           ),
         ),

@@ -23,7 +23,7 @@ class LoginButton extends StatelessWidget{
         ),
         child: Text(
           buttonName,
-          style: AppTheme.heading2.copyWith(color: Colors.white),
+          style: AppData.heading2.copyWith(color: Colors.white),
         ),
       ),
     );

@@ -3,7 +3,18 @@ import 'package:waste_food_management/core/constants/app_colors.dart';
 import 'package:waste_food_management/app/app_theme.dart';
 
 class CommunityCard extends StatelessWidget {
-  const CommunityCard({super.key});
+  final String imagePath; // Image asset path
+  final String title; // Main title text
+  final String actionText; // Action text (like 'Know More')
+  final VoidCallback? onActionTap; // Optional click callback
+
+  const CommunityCard({
+    super.key,
+    required this.imagePath,
+    required this.title,
+    required this.actionText,
+    this.onActionTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +31,7 @@ class CommunityCard extends StatelessWidget {
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8), topRight: Radius.circular(8)),
               child: Image.asset(
-                "assets/images/splash_screen/splashscreen_1.png",
+                imagePath,
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
@@ -34,14 +45,19 @@ class CommunityCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "We visit places to serve people",
-                  style: AppTheme.heading3.copyWith(color: AppColor.black),
+                  title,
+                  style: AppData.heading3.copyWith(color: AppColor.black),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  "Know More",
-                  style: AppTheme.heading3.copyWith(
-                      color: AppColor.primary, fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: onActionTap,
+                  child: Text(
+                    actionText,
+                    style: AppData.heading3.copyWith(
+                      color: AppColor.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),

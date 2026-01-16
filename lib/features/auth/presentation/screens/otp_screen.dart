@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:waste_food_management/app/app_theme.dart';
 import 'package:waste_food_management/core/constants/app_colors.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/otp_success.dart';
 
 import '../widgets/social_button.dart';
 
@@ -62,6 +63,7 @@ class _OTPScreenState extends State<OTPScreen> {
   void verifyOTP() {
     String otp = otpController.text;
     // TODO: API call to verify OTP
+    Navigator.pushNamed(context, OTPSuccess.routeName);
     print("Verifying OTP: $otp");
   }
 
@@ -80,14 +82,14 @@ class _OTPScreenState extends State<OTPScreen> {
                 SizedBox(
                   height: HightScreen * 0.1,
                 ),
-                Text("Enter OTP", style: AppTheme.heading1,),
+                Text("Enter OTP", style: AppData.heading1,),
                 SizedBox(
                   height: HightScreen * 0.1,
                 ),
                 Text(
                   "Your OTP has been sent to\n${widget.email}",
                   textAlign: TextAlign.center,
-                  style: AppTheme.heading2,
+                  style: AppData.heading2,
                 ),
 
                 SizedBox(
@@ -176,7 +178,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     onPressed: verifyOTP,
                     child: Text(
                       "Verify OTP",
-                      style: AppTheme.heading2.copyWith(color: AppColor.white, fontWeight: FontWeight.bold),
+                      style: AppData.heading2.copyWith(color: AppColor.white, fontWeight: FontWeight.bold),
                     ),
                   ),
              ),
