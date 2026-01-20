@@ -158,10 +158,35 @@ class GenericAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  // // ================= load role from firestore =================
+  Future<void> loadUserRole() async{
+    if(_auth.currentUser == null) return;
+    final doc = await _firestore.collection("users").doc(_auth.currentUser!.uid).get();
+    if(doc.exists && doc.data()!.containsKey("role")){
+      selectedRole = doc['role'];
+
+    }else{
+      selectedRole = null;
+    }
+    notifyListeners();
+  }
+
+
+
+
+
+
+
+
+
+
+
   // ================= LOGOUT =================
   Future<void> logout() async {
     selectedRole = null;
     await _auth.signOut();
     notifyListeners();
   }
+
 }

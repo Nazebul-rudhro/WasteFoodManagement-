@@ -7,7 +7,7 @@ import 'donor_profile_screen.dart';
 import 'donor_search_screen.dart';
 
 class DonorScreen extends StatefulWidget {
-  static String routeName = "doner-home";
+  static String routeName = "/doner-home";
   const DonorScreen({Key? key}) : super(key: key);
 
   @override

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:waste_food_management/features/auth/provider/generic_auth_provider.dart';
 import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
+import '../../../../../../auth/presentation/screens/login_screen.dart';
 import '../../../../sections/generic_profile_section.dart';
 
 class DonorProfileScreen extends StatefulWidget {
@@ -26,7 +29,21 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
         child: BaseScreen(
           child: GenericProfileWidget(
             options: donorOptions,
-            onSignOut: () { print("Donor Sign Out"); },
+            onSignOut: () async {
+              final auth =
+              Provider.of<GenericAuthProvider>(context, listen: false);
+
+              await auth.logout();
+
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                LoginScreen.routeName,
+                    (route) => false, // 🔥 সব previous route remove
+              );
+
+              print("Donor Sign Out");
+            },
+
           ),
         ),
       ),

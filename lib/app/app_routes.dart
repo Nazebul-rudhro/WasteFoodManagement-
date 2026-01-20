@@ -9,6 +9,10 @@ import 'package:waste_food_management/features/auth/presentation/screens/splash_
 import 'package:waste_food_management/features/auth/presentation/screens/select_role_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/get_information_details_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_home_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_home_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_screen.dart';
 import '../features/home/presentation/screens/donor/presentation/screens/donor_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/home/presentation/screens/generic_main_screen.dart';
@@ -34,10 +38,26 @@ class AppRoutes {
 
 
 
-    //dontaion scree
+    //
     GetInformationDetails.routeName: (_) => GetInformationDetails(),
-
+    //donor screen
+    DonorScreen.routeName: (_) => DonorScreen(),
     HomePageScreen.routeName: (_) => const HomePageScreen(),
+
+
+
+
+
+  //   receiver screen
+    ReceiverScreen.routeName:(_) => ReceiverScreen(),
+    ReceiverHomeScreen.routeName:(_) => ReceiverHomeScreen(),
+
+
+
+    //   Volunteer screen
+    VolunteerScreen.routeName: (_) => VolunteerScreen(),
+    VolunteerHomeScreen.routeName: (_) => VolunteerHomeScreen(),
+
   };
 
   static Route<dynamic> onGenerate(RouteSettings settings) {

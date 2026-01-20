@@ -6,6 +6,12 @@ import 'package:waste_food_management/features/auth/presentation/screens/forgot_
 import 'package:waste_food_management/features/auth/presentation/screens/select_role_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/signup_screen.dart';
 import 'package:waste_food_management/features/auth/provider/generic_auth_provider.dart';
+import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_home_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_home_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_home_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_screen.dart';
 import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
 import '../../../../app/app_theme.dart';
 import '../sections/show_aleart.dart';
@@ -50,6 +56,7 @@ bool _isLoading = false;
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -62,7 +69,6 @@ bool _isLoading = false;
     );
 
     if (!mounted) return;
-    Future.delayed(Duration(seconds: 1));
 
     if (error != null) {
       ShowAlertMessage(
@@ -77,9 +83,34 @@ bool _isLoading = false;
       return;
     }
 
-    // ✅ ALWAYS go to role screen after login
-    Navigator.pushReplacementNamed(context, RoleSelectionScreen.routeName);
+    // ✅ Check role from Firestore
+    await auth.loadUserRole(); // generic provider function
+
+    if (auth.selectedRole == null) {
+      // Role not selected yet → go to RoleSelectionScreen
+      Navigator.pushReplacementNamed(context, RoleSelectionScreen.routeName);
+    } else {
+      // Role exists → go to corresponding home screen
+      switch (auth.selectedRole) {
+        case 'Donor':
+          Navigator.pushReplacementNamed(context, DonorScreen.routeName);
+          break;
+        case 'Receiver':
+          Navigator.pushReplacementNamed(context, ReceiverScreen.routeName);
+          break;
+        case 'Volunteer':
+          Navigator.pushReplacementNamed(context, VolunteerScreen.routeName);
+          break;
+        default:
+          Navigator.pushReplacementNamed(context, RoleSelectionScreen.routeName);
+      }
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
+
 
 
 
