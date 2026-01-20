@@ -90,4 +90,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'waste-food-management-7425e.firebasestorage.app',
     measurementId: 'G-TKT2ZJ5RM2',
   );
+
 }

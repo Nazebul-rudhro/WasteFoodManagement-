@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waste_food_management/features/auth/provider/generic_auth_provider.dart';
 
 import 'app/app.dart';
 import 'features/home/presentation/screens/donor/presentation/provider/donor_provider.dart';
@@ -14,25 +15,34 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase inside runZonedGuarded
   await runZonedGuarded(() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    // Catch Flutter framework errors and send to Crashlytics
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true; // handled
+    // Flutter framework errors send to Crashlytics
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.dumpErrorToConsole(details);
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
     };
 
-    runApp(MultiProvider(providers: [
-      // ChangeNotifierProvider(create: (_) => AuthProvider(),),
-      ChangeNotifierProvider(create: (_)=> DonerProvider()),
-      ChangeNotifierProvider(create: (_)=> ReciverProvider())
-    ], child: const WasteFoodManagementApp(),));
+    // Platform errors
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => GenericAuthProvider()),
+          ChangeNotifierProvider(create: (_) => DonerProvider()),
+          ChangeNotifierProvider(create: (_) => ReciverProvider()),
+        ],
+        child: const WasteFoodManagementApp(),
+      ),
+    );
   }, (error, stack) {
-    // Catch all uncaught errors
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
   });
 }

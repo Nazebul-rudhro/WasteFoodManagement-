@@ -29,13 +29,13 @@ class ForgotPasswordScreen extends StatelessWidget {
               SizedBox(
                 height: screenHight * 0.05,
               ),
-              CustomTextField(controller: _controller, label: 'Enter Your Mobile Number or Email', hint: 'Phone or Email',),
+
               SizedBox(
                 height: screenHight * 0.1,
               ),
-              LoginButton(buttonName: "SEND OTP", buttonAction: () {
-                Navigator.pushNamed(context, OTPScreen.routeName);
-              },),
+              // LoginButton(buttonName: "SEND OTP", buttonAction: () {
+              //   Navigator.pushNamed(context, OTPScreen.routeName);
+              // },),
 
             ],
           ),
