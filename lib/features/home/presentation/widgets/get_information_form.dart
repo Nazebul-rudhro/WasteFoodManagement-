@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'filed_name.dart';
+import 'package:waste_food_management/core/constants/app_colors.dart';
 
 class GetInformationForm extends StatelessWidget {
   // 🔹 Field Labels
@@ -31,7 +31,16 @@ class GetInformationForm extends StatelessWidget {
 
   // 🔹 Callbacks
   final VoidCallback onSubmit;
-  final VoidCallback onPinLocation; // ← New callback for Pin Location
+  final VoidCallback onPinLocation;
+
+  // 🔹 Validators
+  final String? Function(String?)? consumerValidator;
+  final String? Function(String?)? contactValidator;
+  final String? Function(String?)? phoneValidator;
+  final String? Function(String?)? emailValidator;
+  final String? Function(String?)? addressValidator;
+  final String? Function(String?)? postCodeValidator;
+  final String? Function(String?)? cityValidator;
 
   const GetInformationForm({
     super.key,
@@ -57,77 +66,87 @@ class GetInformationForm extends StatelessWidget {
     required this.postCodeKeyboard,
     required this.cityKeyboard,
     required this.onSubmit,
-    required this.onPinLocation, // ← Receive callback from parent
+    required this.onPinLocation,
+    required this.consumerValidator,
+    required this.contactValidator,
+    required this.phoneValidator,
+    required this.emailValidator,
+    required this.addressValidator,
+    required this.postCodeValidator,
+    required this.cityValidator,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 🔹 Fields
-        FiledName(
-          filedname: consumerNameLabel,
-          textEditingController: consumerNameController,
+        // 🔹 Consumer Name
+        TextFormField(
+          controller: consumerNameController,
           keyboardType: consumerKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: contactNameLabel,
-          textEditingController: contactNameController,
-          keyboardType: contactKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: phoneNumberLabel,
-          textEditingController: phoneNumberController,
-          keyboardType: phoneKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: emailLabel,
-          textEditingController: emailController,
-          keyboardType: emailKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: addressLabel,
-          textEditingController: addressController,
-          keyboardType: addressKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: postCodeLabel,
-          textEditingController: postCodeController,
-          keyboardType: postCodeKeyboard,
-        ),
-        const SizedBox(height: 12),
-        FiledName(
-          filedname: cityLabel,
-          textEditingController: cityController,
-          keyboardType: cityKeyboard,
+          validator: consumerValidator,
+          decoration: InputDecoration(labelText: consumerNameLabel),
         ),
         const SizedBox(height: 12),
 
-        // 🔹 OR Divider
-        Row(
-          children: [
-            Expanded(
-              child: Divider(color: Colors.grey.shade400, thickness: 1),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text('or', style: TextStyle(color: Colors.grey)),
-            ),
-            Expanded(
-              child: Divider(color: Colors.grey.shade400, thickness: 1),
-            ),
-          ],
+        // 🔹 Contact Person
+        TextFormField(
+          controller: contactNameController,
+          keyboardType: contactKeyboard,
+          validator: contactValidator,
+          decoration: InputDecoration(labelText: contactNameLabel),
+        ),
+        const SizedBox(height: 12),
+
+        // 🔹 Phone
+        TextFormField(
+          controller: phoneNumberController,
+          keyboardType: phoneKeyboard,
+          validator: phoneValidator,
+          decoration: InputDecoration(labelText: phoneNumberLabel),
+        ),
+        const SizedBox(height: 12),
+
+        // 🔹 Email (read-only)
+        TextFormField(
+          controller: emailController,
+          keyboardType: emailKeyboard,
+          validator: emailValidator,
+          readOnly: true,
+          decoration: InputDecoration(labelText: emailLabel),
+        ),
+        const SizedBox(height: 12),
+
+        // 🔹 Address
+        TextFormField(
+          controller: addressController,
+          keyboardType: addressKeyboard,
+          validator: addressValidator,
+          decoration: InputDecoration(labelText: addressLabel),
+        ),
+        const SizedBox(height: 12),
+
+        // 🔹 Post Code
+        TextFormField(
+          controller: postCodeController,
+          keyboardType: postCodeKeyboard,
+          validator: postCodeValidator,
+          decoration: InputDecoration(labelText: postCodeLabel),
+        ),
+        const SizedBox(height: 12),
+
+        // 🔹 City
+        TextFormField(
+          controller: cityController,
+          keyboardType: cityKeyboard,
+          validator: cityValidator,
+          decoration: InputDecoration(labelText: cityLabel),
         ),
         const SizedBox(height: 12),
 
         // 🔹 Pin Location Button
         TextButton(
-          onPressed: onPinLocation, // ← Call parent callback
+          onPressed: onPinLocation,
           child: const Text(
             "Pin Location by map",
             style: TextStyle(color: Colors.blueAccent),
@@ -142,8 +161,8 @@ class GetInformationForm extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onSubmit,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColor.green,
+              foregroundColor: AppColor.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

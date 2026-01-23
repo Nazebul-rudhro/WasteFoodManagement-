@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:waste_food_management/core/constants/app_colors.dart';
 import 'package:waste_food_management/features/auth/presentation/sections/show_aleart.dart';
-import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_home_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_home_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_home_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_screen.dart';
+import 'package:waste_food_management/features/auth/provider/generic_auth_provider.dart';
 import '../sections/custom_title_select_profile.dart';
 import '../sections/role_option.dart';
+import 'generic_information_form_screen.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
 
-  static const String routeName = '/selected_profile';
+  static const String routeName = '/selected_role';
 
   @override
   State<RoleSelectionScreen> createState() => _RoleSelectionScreenState();
@@ -24,6 +20,7 @@ class RoleSelectionScreen extends StatefulWidget {
 class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   String? selectedRole;
   bool isLoading = false;
+
 
   Future<void> onContinue() async {
     if (selectedRole == null) {
@@ -37,39 +34,32 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        if (mounted) {
-          ShowAlertMessage(context: context, title: 'Error', message: 'User not found');
-        }
-        return;
-      }
+      if (user == null) return;
 
-      await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
-        "role": selectedRole,
-        "email": user.email,
-        "updatedAt": FieldValue.serverTimestamp(),
-        "profileCompleted": false,
-      }, SetOptions(merge: true));
+      final authProvider =
+      Provider.of<GenericAuthProvider>(context, listen: false);
+
+      await authProvider.saveUserRole(
+        selectedRole!,
+      );
 
       if (!mounted) return;
 
-      if (selectedRole == "Donor") {
-        Navigator.pushReplacementNamed(context, DonorScreen.routeName);
-      }else if(selectedRole == "Receiver"){
-        Navigator.pushReplacementNamed(context, ReceiverScreen.routeName);
-      } else if(selectedRole == "Volunteer") {
-        // Apnar onno route gulo main.dart e define kora thakte hobe
-        Navigator.pushReplacementNamed(context, VolunteerScreen.routeName);
-      }
+      Navigator.pushReplacementNamed(
+        context,
+        GenericInformationFormScreen.routeName,
+      );
     } catch (e) {
-      debugPrint("Firebase Error: $e");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
-        );
-      }
+      ShowAlertMessage(
+        context: context,
+        title: 'Error',
+        boldText: 'Authentication Failed',
+        message:  'Something went wrong',
+        isSuccess: false
+      );
+    debugPrint("Firebase Error: $e");
     } finally {
-      if (mounted) setState(() => isLoading = false);
+    if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -84,7 +74,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const CustomTitleSelectProfile(
-                title: "Choose your role",
+                title: "Choose Your Role",
                 description: "Select one role to continue",
               ),
               const SizedBox(height: 40),
@@ -117,14 +107,16 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                 onPressed: isLoading ? null : onContinue,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: AppColor.primary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  backgroundColor: AppColor.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
                 child: isLoading
                     ? const SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                      color: Colors.white, strokeWidth: 2),
                 )
                     : const Text(
                   "Continue",

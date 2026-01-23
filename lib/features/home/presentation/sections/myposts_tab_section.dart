@@ -15,9 +15,9 @@ class MyPostsTabSection extends StatelessWidget {
           tabAlignment: TabAlignment.start,
           isScrollable: true,
           controller: tabController,
-          labelColor: AppData.primaryColor,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: AppData.primaryColor,
+          labelColor: AppColor.green,
+          unselectedLabelColor: AppColor.black,
+          indicatorColor: AppColor.lightGreen,
           tabs: const [
             Tab(text: "My Post"),
             Tab(text: "Receivers Requests"),
@@ -30,7 +30,7 @@ class MyPostsTabSection extends StatelessWidget {
             children: [
               SingleChildScrollView(
                 child: Card(
-                  color: AppColor.backgrouGray,
+                  // color: AppColor.soft_green,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -55,7 +55,7 @@ class MyPostsTabSection extends StatelessWidget {
                         const SizedBox(height: 15),
                         ElevatedButton.icon(
                           onPressed: () {},
-                          icon: const Icon(Icons.add),
+                          icon: Icon(Icons.add, color: AppColor.white,),
                           label: Text(
                             "Create Donation Post",
                             style: AppData.heading2.copyWith(
@@ -63,7 +63,7 @@ class MyPostsTabSection extends StatelessWidget {
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColor.primary,
+                            backgroundColor: AppColor.green,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),

@@ -26,7 +26,7 @@ class NgoNearYouSection extends StatelessWidget {
             GestureDetector(
               onTap: onActionTap,
               child: Text("See More",
-                  style: AppData.heading2.copyWith(color: AppColor.primary)),
+                  style: AppData.heading2.copyWith(color: AppColor.green)),
             ),
           ],
         ),

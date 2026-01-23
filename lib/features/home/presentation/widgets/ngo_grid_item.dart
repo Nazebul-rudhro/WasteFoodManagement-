@@ -15,7 +15,7 @@ class NgoGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColor.backgrouGray,
+      // color: AppColor.soft_green,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -37,8 +37,12 @@ class NgoGridItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(data.name, style: AppData.heading3),
-                Text(data.distance, style: AppData.heading3),
+                Text(
+                    data.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppData.heading3.copyWith(color: AppColor.black, fontSize: 12)),
+                Text(data.distance, style: AppData.heading3.copyWith(color: AppColor.black)),
               ],
             ),
           ],

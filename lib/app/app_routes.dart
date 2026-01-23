@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/forgot_password.dart';
+import 'package:waste_food_management/features/auth/presentation/screens/generic_information_form_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/login_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/otp_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/otp_success.dart';
@@ -38,7 +39,9 @@ class AppRoutes {
 
 
 
-    //
+    // person information get
+    GenericInformationFormScreen.routeName: (_) => GenericInformationFormScreen(),
+
     GetInformationDetails.routeName: (_) => GetInformationDetails(),
     //donor screen
     DonorScreen.routeName: (_) => DonorScreen(),

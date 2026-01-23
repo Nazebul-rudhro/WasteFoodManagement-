@@ -73,7 +73,7 @@ class DonationHistoryItem extends StatelessWidget {
                     data.status,
                     style: AppData.heading3.copyWith(
                       color: data.status == "Completed"
-                          ? AppColor.lime_green
+                          ? AppColor.lightGreen
                           : AppColor.primary,
                       fontWeight: FontWeight.bold,
                     ),

@@ -4,12 +4,14 @@ class FiledName extends StatelessWidget {
   final String filedname;
   final TextEditingController textEditingController;
   final TextInputType keyboardType;
+  final bool readOnly;
 
   const FiledName({
     super.key,
     required this.filedname,
     required this.textEditingController,
     required this.keyboardType,
+    this.readOnly = false, // default false
   });
 
   @override
@@ -28,6 +30,7 @@ class FiledName extends StatelessWidget {
         TextFormField(
           controller: textEditingController,
           keyboardType: keyboardType,
+          readOnly: readOnly,
           decoration: InputDecoration(
             hintText: "Enter $filedname",
             border: OutlineInputBorder(

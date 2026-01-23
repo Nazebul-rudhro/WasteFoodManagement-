@@ -31,7 +31,7 @@ class CommunitySection extends StatelessWidget {
               onTap: onActionTab,
               child: Text(
                 "View Feed",
-                style: AppData.heading2.copyWith(color: AppColor.primary),
+                style: AppData.heading2.copyWith(color: AppColor.green),
               ),
             ),
           ],

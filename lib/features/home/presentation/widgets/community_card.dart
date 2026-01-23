@@ -19,7 +19,7 @@ class CommunityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColor.backgrouGray,
+      // color: AppColor.backgrouGray,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -40,21 +40,23 @@ class CommunityCard extends StatelessWidget {
 
           // Text section
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppData.heading3.copyWith(color: AppColor.black),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppData.heading3.copyWith(color: AppColor.black, fontSize: 12),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 GestureDetector(
                   onTap: onActionTap,
                   child: Text(
                     actionText,
                     style: AppData.heading3.copyWith(
-                      color: AppColor.primary,
+                      color: AppColor.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -33,7 +33,7 @@ class RoleOption extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: selected ? AppColor.primary : Colors.grey.shade200,
+            color: selected ? AppColor.lightGreen : Colors.grey.shade200,
             width: selected ? 2 : 1,
           ),
         ),
@@ -45,9 +45,9 @@ class RoleOption extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: selected ? AppColor.primary : Colors.white,
+                color: selected ? AppColor.lightGreen : Colors.white,
                 border: Border.all(
-                  color: selected ? AppColor.primary : Colors.grey,
+                  color: selected ? AppColor.lightGreen : Colors.grey,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(4),

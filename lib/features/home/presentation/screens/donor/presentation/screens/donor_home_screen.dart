@@ -12,14 +12,13 @@ import '../../../../../../auth/data/model/faq_item_model.dart';
 import '../../../../../../auth/data/model/ngo_model.dart';
 import '../../../../sections/base_screen.dart';
 import '../../../../sections/community_section.dart';
-import '../../../../sections/donation_history_section.dart';
 import '../../../../sections/faq_section.dart';
 import '../../../../sections/info_cards_section.dart';
 import '../../../../sections/myposts_tab_section.dart';
 import '../../../../sections/ngo_near_section.dart';
 
 class DonorHomeScreen extends StatefulWidget {
-  static String routeName = "doner-home";
+  static String routeName = "/doner-home";
 
   const DonorHomeScreen({super.key});
 
@@ -138,15 +137,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
             InfoCardsSection(
               title1: "Donations",
               value1: 120,
-              color1: AppColor.backgrouGray,
+              color1: AppColor.soft_green,
 
               title2: "Feedback",
               value2: 500,
-              color2: AppData.primaryColor.withOpacity(0.6),
+              color2: AppColor.lightGreen,
 
               title3: "Points earned",
               value3: 1000,
-              color3: AppColor.backgrouGray,
+              color3: AppColor.soft_green,
             ),
             SizedBox(height: screenHeight,),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waste_food_management/core/constants/app_colors.dart';
 
 import '../../../../app/app_theme.dart';
 class HeaderSection extends StatelessWidget {
@@ -34,7 +35,7 @@ class HeaderSection extends StatelessWidget {
                     text: role,
                     style: AppData.heading2.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: AppColor.green,
                     ),
                   ),
                 ],
@@ -45,9 +46,10 @@ class HeaderSection extends StatelessWidget {
         GestureDetector(
           onTap: noticicationOnActionTap,
           child: Badge(
+            backgroundColor: AppColor.green,
             label: Text(
               "$notificationCount",
-              style: const TextStyle(color: Colors.white),
+              style:  TextStyle(color: AppColor.white),
             ),
             child: const Icon(Icons.notifications),
           ),

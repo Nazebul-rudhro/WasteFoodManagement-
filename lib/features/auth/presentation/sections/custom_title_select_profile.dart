@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_food_management/app/app_theme.dart';
+import 'package:waste_food_management/core/constants/app_colors.dart';
 
 class CustomTitleSelectProfile extends StatelessWidget {
   final String title;
@@ -19,12 +20,12 @@ class CustomTitleSelectProfile extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppData.heading1,
+          style: AppData.heading1.copyWith(color: AppColor.green),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 15),
         Text(
           description,
-          style: AppData.heading3.copyWith(fontSize: 16),
+          style: AppData.heading3.copyWith(fontSize: 16, color: AppColor.black),
         ),
       ],
     );
