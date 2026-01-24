@@ -1,11 +1,15 @@
-class NgoModel {
+class NGOModel {
   final String name;
-  final String distance;
   final String image;
+  final String location;
+  final String foodRequirement;
+  final String distance;
 
-  const NgoModel({
+  const NGOModel({
     required this.name,
-    required this.distance,
     required this.image,
+    required this.location,
+    required this.foodRequirement,
+    required this.distance,
   });
 }

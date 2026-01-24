@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
 import 'package:waste_food_management/features/home/presentation/sections/header_section.dart';
 
+import '../../../../../../../app/app_routes.dart';
 import '../../../../../../../app/app_theme.dart';
 import '../../../../../../../core/constants/app_colors.dart';
 import '../../../../../../../core/constants/app_image.dart';
@@ -16,6 +17,7 @@ import '../../../../sections/faq_section.dart';
 import '../../../../sections/info_cards_section.dart';
 import '../../../../sections/myposts_tab_section.dart';
 import '../../../../sections/ngo_near_section.dart';
+import 'ngo_list_screen.dart';
 
 class DonorHomeScreen extends StatefulWidget {
   static String routeName = "/doner-home";
@@ -41,25 +43,25 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
   ];
 
   final ngoList = [
-    NgoModel(
+    NGOModel(
       name: "Sks",
       distance: "2.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Hope NGO",
       distance: "1.2km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Helping Hands",
       distance: "3.0km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Food For All",
       distance: "4.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
   ];
 
@@ -154,7 +156,12 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
             // DonationHistorySection(list: donationHistoryList,),
 
             SizedBox(height: screenHeight,),
-            NgoNearYouSection(list: ngoList, onActionTap: () {  },),
+            NgoNearYouSection(list: ngoList, onActionTap: () {
+              Navigator.push(
+                context,
+                AppRoutes.smooth(NgoListScreen()),
+              );
+            },),
             SizedBox(height: screenHeight,),
             // const CommunitySection(),
             CommunitySection(

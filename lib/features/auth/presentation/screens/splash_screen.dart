@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waste_food_management/app/app_routes.dart';
 import 'package:waste_food_management/core/constants/app_colors.dart';
 import 'package:waste_food_management/core/constants/app_image.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen2.dart';
@@ -76,7 +77,7 @@ class SplashScreenPage extends StatelessWidget {
                             // বাম দিকের Skip বাটন
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, SplashScreenTwo.routeName);
+                                AppRoutes.pushNamed(context, SplashScreenTwo.routeName);
                               },
                               child: const Text(
                                 "Skip",
@@ -91,7 +92,7 @@ class SplashScreenPage extends StatelessWidget {
                             // ডান দিকের Next বাটন
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, SplashScreenTwo.routeName);
+                                AppRoutes.pushNamed(context, SplashScreenTwo.routeName);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColor.lightGreen,

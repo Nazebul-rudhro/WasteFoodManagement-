@@ -5,7 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../auth/data/model/ngo_model.dart';
 
 class NgoGridItem extends StatelessWidget {
-  final NgoModel data;
+  final NGOModel data;
 
   const NgoGridItem({
     super.key,
@@ -19,8 +19,8 @@ class NgoGridItem extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
+      // child: Padding(
+      //   padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             Expanded(
@@ -30,6 +30,7 @@ class NgoGridItem extends StatelessWidget {
                   data.image,
                   fit: BoxFit.cover,
                   width: double.infinity,
+                  // height: 250,
                 ),
               ),
             ),
@@ -46,7 +47,7 @@ class NgoGridItem extends StatelessWidget {
               ],
             ),
           ],
-        ),
+        // ),
       ),
     );
   }

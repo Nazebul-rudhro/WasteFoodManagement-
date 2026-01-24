@@ -42,25 +42,25 @@ class _ReceiverHomeScreenState extends State<VolunteerHomeScreen> with TickerPro
   ];
 
   final ngoList = [
-    NgoModel(
+    NGOModel(
       name: "Sks",
       distance: "2.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Hope NGO",
       distance: "1.2km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Helping Hands",
       distance: "3.0km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
-    NgoModel(
+    NGOModel(
       name: "Food For All",
       distance: "4.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
   ];
 
