@@ -13,7 +13,12 @@
           "package_name": "com.example.waste_food_management"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "193338624164-hfpl5ptpcsqtodj8036b2t782glvjulh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDsjuWL3UiXrV17D_qnuLS4dbBhQEdMRZU"
@@ -21,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193338624164-hfpl5ptpcsqtodj8036b2t782glvjulh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "193338624164-gia5tndnvfjabt903m1rjq5cl1r6cf81.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.wasteFoodManagement"
+              }
+            }
+          ]
         }
       }
     }

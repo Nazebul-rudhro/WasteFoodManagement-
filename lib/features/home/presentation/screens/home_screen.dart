@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../app/app_routes.dart';
 import '../../../../app/app_theme.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../sections/header_section.dart';
@@ -10,6 +11,7 @@ import '../sections/faq_section.dart';
 import '../sections/ngo_near_section.dart';
 import '../../../auth/data/model/donation_history_model.dart';
 import '../../../auth/data/model/ngo_model.dart';
+import 'donor/presentation/screens/ngo_list_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -39,23 +41,23 @@ class _HomePageScreenState extends State<HomePageScreen>
   final ngoList = [
     NGOModel(
       name: "Sks",
-      distance: "2.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
+      pickupTime: "2.5km",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
     NGOModel(
       name: "Hope NGO",
-      distance: "1.2km",
-      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
+      pickupTime: "1.2km",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
     NGOModel(
       name: "Helping Hands",
-      distance: "3.0km",
-      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
+      pickupTime: "3.0km",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
     NGOModel(
       name: "Food For All",
-      distance: "4.5km",
-      image: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
+      pickupTime: "4.5km",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
     ),
   ];
 
@@ -116,7 +118,16 @@ class _HomePageScreenState extends State<HomePageScreen>
               SizedBox(height: 20),
 
               // ---------------- NGOs Near You ----------------
-              NgoNearYouSection(list: ngoList, onActionTap: () { debugPrint("View NGOs Click"); },),
+              // NgoNearYouSection(list: ngoList, onActionTap: () { debugPrint("View NGOs Click"); },),
+              NgoNearYouSection(
+                onActionTap: () {
+                  Navigator.push(
+                    context,
+                    AppRoutes.smooth(const NgoListScreen()),
+                  );
+                },
+              ),
+
               SizedBox(height: 20),
 
               // ---------------- Community ----------------

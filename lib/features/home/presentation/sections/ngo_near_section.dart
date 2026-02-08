@@ -1,122 +1,432 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
-// import '../../../auth/data/model/ngo_model.dart';
-// import '../widgets/ngo_grid_item.dart';
-// import 'package:waste_food_management/core/constants/app_colors.dart';
+// import 'package:provider/provider.dart';
 // import 'package:waste_food_management/app/app_theme.dart';
+// import 'package:waste_food_management/core/constants/app_colors.dart';
+// import '../../../auth/data/model/post_model.dart';
+// import '../screens/donor/presentation/provider/donor_provider.dart';
 //
 // class NgoNearYouSection extends StatelessWidget {
-//   final List<NGOModel> list;
 //   final VoidCallback onActionTap;
 //
-//   const NgoNearYouSection({super.key, required this.list, required this.onActionTap});
+//   const NgoNearYouSection({super.key, required this.onActionTap});
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     if (list.isEmpty) return const SizedBox();
-//
-//     final displayList = list.length > 4 ? list.take(0).toList() : list;
-//
 //     return Column(
 //       crossAxisAlignment: CrossAxisAlignment.start,
 //       children: [
+//         /// 🔹 Header
 //         Row(
 //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //           children: [
-//             Text("NGOs Near You", style: AppData.heading2),
+//              Text(
+//               "Recent Donations",
+//               style: AppData.heading2,
+//             ),
 //             GestureDetector(
 //               onTap: onActionTap,
-//               child: Text("See More",
-//                   style: AppData.heading2.copyWith(color: AppColor.green)),
+//               child:  Text(
+//                 "See All",
+//                 style: AppData.heading2.copyWith(color: AppColor.green) ,
+//               ),
 //             ),
 //           ],
 //         ),
-//         const Divider(thickness: 1),
-//         GridView.count(
-//           shrinkWrap: true,
-//           physics: const NeverScrollableScrollPhysics(),
-//           crossAxisCount: 2,
-//           mainAxisSpacing: 5,
-//           crossAxisSpacing: 5,
-//           children: List.generate(displayList.length, (index) {
-//             return NgoGridItem(data: displayList[index]);
-//           }),
-//         ),
+//         const SizedBox(height: 10),
+//
+//         /// 🔹 Donation Grid (Using PostModel)
+//         // StreamBuilder<List<PostModel>>(
+//         //   // stream: context.read<DonorProvider>().getMyPosts(limit: 4),
+//         //   builder: (context, snapshot) {
+//         //     if (snapshot.connectionState == ConnectionState.waiting) {
+//         //       return const Center(child: CircularProgressIndicator(color: Colors.green));
+//         //     }
+//         //
+//         //     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//         //       return const Padding(
+//         //         padding: EdgeInsets.symmetric(vertical: 20),
+//         //         child: Center(child: Text("No donations found", style: TextStyle(color: Colors.grey))),
+//         //       );
+//         //     }
+//         //
+//         //     final posts = snapshot.data!;
+//         //
+//         //     return GridView.builder(
+//         //       shrinkWrap: true,
+//         //       physics: const NeverScrollableScrollPhysics(),
+//         //       itemCount: posts.length,
+//         //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//         //         crossAxisCount: 2,
+//         //         mainAxisSpacing: 10,
+//         //         crossAxisSpacing: 10,
+//         //         childAspectRatio: 0.82,
+//         //       ),
+//         //       itemBuilder: (context, index) {
+//         //         final post = posts[index];
+//         //         return _buildPostCard(post);
+//         //       },
+//         //     );
+//         //   },
+//         // ),
 //       ],
+//     );
+//   }
+//
+//
+//   Stream<List<PostModel>> getRecentPosts() {
+//     return FirebaseFirestore.instance
+//         .collection('posts')
+//         .orderBy('createdAt', descending: true)
+//         .limit(4)
+//         .snapshots()
+//         .map((snapshot) {
+//       return snapshot.docs
+//           .map((doc) => PostModel.fromMap(doc.data()))
+//           .toList();
+//     });
+//   }
+//
+//
+//
+//   // StreamBuilder<List<PostModel>>(
+//   // stream: getRecentPosts(),
+//   // builder: (context, snapshot) {
+//   // if (snapshot.connectionState == ConnectionState.waiting) {
+//   // return const Center(
+//   // child: CircularProgressIndicator(color: Colors.green),
+//   // );
+//   // }
+//   //
+//   // if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//   // return const Padding(
+//   // padding: EdgeInsets.all(20),
+//   // child: Center(child: Text("No recent donations")),
+//   // );
+//   // }
+//   //
+//   // final posts = snapshot.data!;
+//   //
+//   // return GridView.builder(
+//   // shrinkWrap: true,
+//   // physics: const NeverScrollableScrollPhysics(),
+//   // itemCount: posts.length,
+//   // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//   // crossAxisCount: 2,
+//   // mainAxisSpacing: 10,
+//   // crossAxisSpacing: 10,
+//   // childAspectRatio: 0.82,
+//   // ),
+//   // itemBuilder: (context, index) {
+//   // return _postCard(posts[index]);
+//   // },
+//   // );
+//   // },
+//   // )
+//
+//
+//
+//   /// 🔹 Post Card Design
+//   Widget _buildPostCard(PostModel post) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(12),
+//         boxShadow: [
+//           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 4)),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Expanded(
+//             child: ClipRRect(
+//               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+//               child: post.imageUrls.isNotEmpty
+//                   ? Image.network(post.imageUrls[0], width: double.infinity, fit: BoxFit.cover,
+//                   errorBuilder: (_, __, ___) => Container(color: Colors.grey[100], child: const Icon(Icons.fastfood, color: Colors.grey)))
+//                   : Container(color: Colors.grey[100], child: const Icon(Icons.fastfood, color: Colors.grey)),
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(post.foodName, maxLines: 1, overflow: TextOverflow.ellipsis,
+//                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+//                 const SizedBox(height: 2),
+//                 Text("Qty: ${post.quantity}", style: const TextStyle(color: Colors.green, fontSize: 11, fontWeight: FontWeight.bold)),
+//                 const SizedBox(height: 2),
+//                 Row(
+//                   children: [
+//                     const Icon(Icons.location_on, size: 10, color: Colors.grey),
+//                     Expanded(child: Text(post.pickupAddress, maxLines: 1, overflow: TextOverflow.ellipsis,
+//                         style: const TextStyle(color: Colors.grey, fontSize: 10))),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
 //     );
 //   }
 // }
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../../auth/data/model/ngo_model.dart';
-import '../widgets/ngo_grid_item.dart';
-import 'package:waste_food_management/core/constants/app_colors.dart';
 import 'package:waste_food_management/app/app_theme.dart';
+import 'package:waste_food_management/core/constants/app_colors.dart';
+import '../../../auth/data/model/post_model.dart';
 
 class NgoNearYouSection extends StatelessWidget {
-  final List<NGOModel> list;
   final VoidCallback onActionTap;
 
-  const NgoNearYouSection({super.key, required this.list, required this.onActionTap});
+  const NgoNearYouSection({super.key, required this.onActionTap});
+
+  /// 🔹 Firestore stream for recent posts
+  Stream<List<PostModel>> getRecentPosts() {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('createdAt', descending: true)
+        .limit(4)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => PostModel.fromMap(doc.data()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (list.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Center(
-          child: Text(
-            "NGO Not Found",
-            style: AppData.heading3.copyWith(color: Colors.grey),
-          ),
-        ),
-      );
-    }
-
-    final displayList = list; // সব data দেখাবে
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// Title row
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("NGOs Near You", style: AppData.heading2),
-              GestureDetector(
-                onTap: onActionTap,
-                child: Text(
-                  "See More",
-                  style: AppData.heading2.copyWith(color: AppColor.green),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const Divider(thickness: 1),
-
-        /// Grid of NGOs
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: displayList.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 0.85,
+        /// 🔹 Header
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Recent Donations",
+              style: AppData.heading2,
             ),
-            itemBuilder: (context, index) {
-              return NgoGridItem(data: displayList[index]);
-            },
-          ),
+            GestureDetector(
+              onTap: onActionTap,
+              child: Text(
+                "See All",
+                style: AppData.heading2.copyWith(color: AppColor.green),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        /// 🔹 Donation Grid
+        StreamBuilder<List<PostModel>>(
+          stream: getRecentPosts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.all(20),
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.green),
+                ),
+              );
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.all(20),
+                child: Center(
+                  child: Text(
+                    "No recent donations",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              );
+            }
+
+            final posts = snapshot.data!;
+
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: posts.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 0.82,
+              ),
+              itemBuilder: (context, index) {
+                return _buildPostCard(posts[index]);
+              },
+            );
+          },
         ),
       ],
+    );
+  }
+
+  /// 🔹 Post Card UI
+  Widget _buildPostCard(PostModel post) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// Image
+          Expanded(
+            child: ClipRRect(
+              borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(12)),
+              child: post.imageUrls.isNotEmpty
+                  ? Image.network(
+                post.imageUrls.first,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => _imagePlaceholder(),
+              )
+                  : _imagePlaceholder(),
+            ),
+          ),
+
+          /// Info
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                 Text(
+                   post.foodName,
+                   maxLines: 1,
+                   overflow: TextOverflow.ellipsis,
+                   style: const TextStyle(
+                     fontWeight: FontWeight.bold,
+                     fontSize: 13,
+                   ),
+                 ),
+                 const SizedBox(height: 4),
+                 Text(
+                   "Qty: ${post.quantity}",
+                   style: const TextStyle(
+                     color: Colors.green,
+                     fontSize: 11,
+                     fontWeight: FontWeight.bold,
+                   ),
+                 ),
+               ],),
+                const SizedBox(height: 4),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.end,
+                //   crossAxisAlignment: CrossAxisAlignment.end,
+                //
+                //   children: [
+                //     const Icon(Icons.location_on,
+                //         size: 12, color: Colors.grey),
+                //     const SizedBox(width: 4),
+                //     Expanded(
+                //       child: Text(
+                //         post.pickupAddress,
+                //         maxLines: 1,
+                //         overflow: TextOverflow.ellipsis,
+                //         style: const TextStyle(
+                //           fontSize: 10,
+                //           color: Colors.grey,
+                //         ),
+                //       ),
+                //     ),
+                //
+                //     pickupTime: 'pickupTime'
+                //
+                //
+                //   ],
+                // ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    /// 📍 Address (Left)
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            size: 12,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              post.pickupAddress,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 6),
+
+                    /// ⏰ Pickup Time (Right)
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 12,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          post.pickupTime.isNotEmpty ? post.pickupTime : 'N/A',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _imagePlaceholder() {
+    return Container(
+      color: Colors.grey[100],
+      child: const Center(
+        child: Icon(Icons.fastfood, color: Colors.grey),
+      ),
     );
   }
 }

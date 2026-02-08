@@ -138,9 +138,9 @@ class NGOCard extends StatelessWidget {
           // Safe Image
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: ngo.image.isNotEmpty
+            child: ngo.imageUrl.isNotEmpty
                 ? Image.asset(
-              ngo.image,
+              ngo.imageUrl,
               height: 150,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -204,7 +204,7 @@ class NGOCard extends StatelessWidget {
                         const Icon(Icons.pin_drop_outlined, size: 18, color: Colors.grey),
                         const SizedBox(width: 4),
                         Text(
-                          ngo.distance,
+                          ngo.pickupTime,
                           style: const TextStyle(fontSize: 14, color: Colors.grey),
                         ),
                       ],

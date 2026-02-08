@@ -135,6 +135,7 @@ import 'package:waste_food_management/features/auth/provider/generic_auth_provid
 import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
 import '../../../../../../auth/data/model/profile_option_model.dart';
 import '../../../../../../auth/presentation/screens/login_screen.dart';
+import '../../../../sections/Create_ngo_dialog.dart';
 import '../../../../sections/generic_profile_section.dart';
 
 class DonorProfileScreen extends StatefulWidget {
@@ -214,9 +215,14 @@ class _DonorProfileScreenState extends State<DonorProfileScreen> {
         onTap: () {},
       ),
       ProfileOptionItem(
-        title: "Your Donations",
+        title: "Create NGO",
         icon: Icons.volunteer_activism_outlined,
-        onTap: () {},
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (_) => const CreateNgoDialog(),
+          );
+        },
       ),
       ProfileOptionItem(
         title: "Rewards & Achievement",

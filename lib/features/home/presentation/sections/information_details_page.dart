@@ -342,44 +342,6 @@ class _EasyInformationFormState extends State<EasyInformationForm> {
     };
   }
 
-  /// ===============================
-  /// SUBMIT FORM
-  /// ===============================
-  // void submitForm() async{
-  //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> DonorScreen()));
-  //   if (!_formKey.currentState!.validate()) return;
-  //   final data = buildFormData();
-  //   try{
-  //     await auth.saveUserProfile(data);
-  //     await auth.loadUserRole();
-  //     if(!mounted)return;
-  //     final String role = auth.selectedRole.toString().toLowerCase();
-  //     debugPrint(auth.selectedRole.toString());
-  //     ShowAlertMessage(context: context,
-  //       title: 'Success',
-  //       boldText: 'Profile saved!',
-  //       message: 'Your information has been successfully updated.',
-  //       isSuccess: true,);
-  //     if(role == "donor"){
-  //       Navigator.pushReplacementNamed(context, DonorScreen.routeName);
-  //     }else if(role == "receiver"){
-  //       Navigator.pushReplacementNamed(context, ReceiverScreen.routeName);
-  //     }else if(role == "volunteer"){
-  //       Navigator.pushReplacementNamed(context, VolunteerScreen.routeName);
-  //     }
-  //
-  //   }catch (e){
-  //     ShowAlertMessage(
-  //       context: context,
-  //       title: 'Error',
-  //       boldText: 'Profile not saved!',
-  //       message: 'Something went wrong. Please try again.',
-  //       isSuccess: false,
-  //     );
-  //     debugPrint(e.toString());
-  //   }
-  //
-  // }
 
 
   void submitForm() async {

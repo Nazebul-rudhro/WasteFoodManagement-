@@ -3,29 +3,29 @@ import '../../../auth/data/model/ngo_model.dart';
 import '../widgets/ngo_card.dart';
 
 class GenericNGOList extends StatelessWidget {
-  const GenericNGOList({super.key});
+   GenericNGOList({super.key});
 
-  final List<NGOModel> ngoList = const [
+  final List<NGOModel> ngoList = [
     NGOModel(
       name: "Helping Hands",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png",
       location: "Dhaka",
       foodRequirement: "20 people",
-      distance: "2 km",
+      pickupTime: "2 km",
     ),
     NGOModel(
       name: "Food For All",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png",
       location: "Chittagong",
       foodRequirement: "15 people",
-      distance: "5 km",
+      pickupTime: "5 km",
     ),
     NGOModel(
       name: "Hope Foundation",
-      image: "assets/images/splash_screen/splashscreen_1.png",
+      imageUrl: "assets/images/splash_screen/splashscreen_1.png",
       location: "Sylhet",
       foodRequirement: "30 people",
-      distance: "10 km",
+      pickupTime: "10 km",
     ),
   ];
 

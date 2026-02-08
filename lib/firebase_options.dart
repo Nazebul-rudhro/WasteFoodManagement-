@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     projectId: 'waste-food-management-7425e',
     databaseURL: 'https://waste-food-management-7425e-default-rtdb.firebaseio.com',
     storageBucket: 'waste-food-management-7425e.firebasestorage.app',
+    iosClientId: '193338624164-gia5tndnvfjabt903m1rjq5cl1r6cf81.apps.googleusercontent.com',
     iosBundleId: 'com.example.wasteFoodManagement',
   );
 
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     projectId: 'waste-food-management-7425e',
     databaseURL: 'https://waste-food-management-7425e-default-rtdb.firebaseio.com',
     storageBucket: 'waste-food-management-7425e.firebasestorage.app',
+    iosClientId: '193338624164-gia5tndnvfjabt903m1rjq5cl1r6cf81.apps.googleusercontent.com',
     iosBundleId: 'com.example.wasteFoodManagement',
   );
 

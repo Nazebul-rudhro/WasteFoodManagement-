@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../screens/donor/presentation/screens/section/create_donation_dialog.dart';
 class MyPostsTabSection extends StatelessWidget {
   final TabController tabController;
 
@@ -54,7 +55,11 @@ class MyPostsTabSection extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(context: context, builder: (BuildContext context) {
+                              return CreateDonationDialog();
+                            });
+                          },
                           icon: Icon(Icons.add, color: AppColor.white,),
                           label: Text(
                             "Create Donation Post",
@@ -62,6 +67,13 @@ class MyPostsTabSection extends StatelessWidget {
                               color: AppColor.white,
                             ),
                           ),
+
+
+
+
+
+
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.green,
                             shape: RoundedRectangleBorder(
@@ -69,6 +81,24 @@ class MyPostsTabSection extends StatelessWidget {
                             ),
                           ),
                         ),
+
+
+
+                    // ElevatedButton.icon(
+                    //   onPressed: () {
+                    //     showDialog(
+                    //       context: context,
+                    //       isScrollControlled: true,
+                    //       builder: (_) =>
+                    //       const CreateDonationDialog(),
+                    //     );
+                    //   }, label: null,
+
+
+
+
+
+
                       ],
                     ),
                   ),

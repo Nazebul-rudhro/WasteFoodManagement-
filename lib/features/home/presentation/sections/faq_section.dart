@@ -30,7 +30,7 @@ class FaqSection extends StatelessWidget {
             title: Text(item.question),
             children: [
               Padding(
-                padding: const EdgeInsets.all(8),
+                padding:  EdgeInsets.all(8),
                 child: Text(item.answer),
               )
             ],

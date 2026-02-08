@@ -1,15 +1,35 @@
 class NGOModel {
   final String name;
-  final String image;
+  final String pickupTime;
+  final String imageUrl;
   final String location;
   final String foodRequirement;
-  final String distance;
 
   const NGOModel({
     required this.name,
-    required this.image,
+    required this.pickupTime,
+    required this.imageUrl,
     required this.location,
     required this.foodRequirement,
-    required this.distance,
   });
+
+  factory NGOModel.fromMap(Map<String, dynamic>? map) {
+    if (map == null) {
+      return const NGOModel(
+        name: '',
+        pickupTime: '',
+        imageUrl: '',
+        location: '',
+        foodRequirement: '',
+      );
+    }
+
+    return NGOModel(
+      name: map['name']?.toString() ?? '',
+      pickupTime: map['pickupTime']?.toString() ?? '',
+      imageUrl: map['imageUrl']?.toString() ?? '',
+      location: map['location']?.toString() ?? '',
+      foodRequirement: map['foodRequirement']?.toString() ?? '',
+    );
+  }
 }

@@ -21,7 +21,7 @@ class NgoListScreen extends StatelessWidget {
         backgroundColor: AppColor.soft_green,
         elevation: 2,
       ),
-      body: const SafeArea(child: GenericNGOList()),
+      body: SafeArea(child: GenericNGOList()),
     );
   }
 }
