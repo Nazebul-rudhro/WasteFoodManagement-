@@ -17,8 +17,8 @@ import '../../../../sections/donation_history_section.dart';
 import '../../../../sections/faq_section.dart';
 import '../../../../sections/info_cards_section.dart';
 import '../../../../sections/myposts_tab_section.dart';
-import '../../../../sections/ngo_near_section.dart';
-import '../../../donor/presentation/screens/ngo_list_screen.dart';
+import '../../../../sections/donor_recent_section.dart';
+import '../../../donor/presentation/screens/food_donation_list_screen.dart';
 
 class VolunteerHomeScreen extends StatefulWidget {
   static String routeName = "volunteer-home";
@@ -158,14 +158,14 @@ class _ReceiverHomeScreenState extends State<VolunteerHomeScreen> with TickerPro
 
             SizedBox(height: screenHeight,),
             // NgoNearYouSection(list: ngoList, onActionTap: () {  },),
-            NgoNearYouSection(
-              onActionTap: () {
-                Navigator.push(
-                  context,
-                  AppRoutes.smooth(const NgoListScreen()),
-                );
-              },
-            ),
+            // DonorRecentSection(
+            //   onActionTap: () {
+            //     Navigator.push(
+            //       context,
+            //       AppRoutes.smooth(const FoodDonationListScreen()),
+            //     );
+            //   },
+            // ),
 
             SizedBox(height: screenHeight,),
             // const CommunitySection(),

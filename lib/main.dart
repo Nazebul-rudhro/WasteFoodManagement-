@@ -37,7 +37,7 @@ Future<void> main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => GenericAuthProvider()),
           ChangeNotifierProvider(create: (_) => DonorProvider()),
-          ChangeNotifierProvider(create: (_) => ReciverProvider()),
+          ChangeNotifierProvider(create: (_) => ReceiverProvider()),
         ],
         child: const WasteFoodManagementApp(),
       ),

@@ -8,10 +8,10 @@ import '../sections/myposts_tab_section.dart';
 import '../sections/community_section.dart';
 import '../sections/donation_history_section.dart';
 import '../sections/faq_section.dart';
-import '../sections/ngo_near_section.dart';
+import '../sections/donor_recent_section.dart';
 import '../../../auth/data/model/donation_history_model.dart';
 import '../../../auth/data/model/ngo_model.dart';
-import 'donor/presentation/screens/ngo_list_screen.dart';
+import 'donor/presentation/screens/food_donation_list_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -119,11 +119,11 @@ class _HomePageScreenState extends State<HomePageScreen>
 
               // ---------------- NGOs Near You ----------------
               // NgoNearYouSection(list: ngoList, onActionTap: () { debugPrint("View NGOs Click"); },),
-              NgoNearYouSection(
+              DonorRecentSection(
                 onActionTap: () {
                   Navigator.push(
                     context,
-                    AppRoutes.smooth(const NgoListScreen()),
+                    AppRoutes.smooth(const FoodDonationListScreen()),
                   );
                 },
               ),

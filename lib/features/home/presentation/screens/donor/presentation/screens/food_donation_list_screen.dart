@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:waste_food_management/core/constants/app_colors.dart';
-import '../../../../sections/generic_ngo_list.dart';
+import '../../../../sections/generic_donation_list.dart';
 
-class NgoListScreen extends StatelessWidget {
-  const NgoListScreen({super.key});
-  static const String routeName = "/ngo-list";
+class FoodDonationListScreen extends StatelessWidget {
+  const FoodDonationListScreen({super.key});
+  static const String routeName = "/Food-Donation-List";
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +15,13 @@ class NgoListScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
         ),
         title: const Text(
-          "List of NGOs",
+          "Food Donation List",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         backgroundColor: AppColor.soft_green,
         elevation: 2,
       ),
-      body: SafeArea(child: GenericNGOList()),
+      body: SafeArea(child: GenericDonorList()),
     );
   }
 }
