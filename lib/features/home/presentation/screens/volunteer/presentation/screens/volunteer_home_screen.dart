@@ -1,70 +1,29 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
-import 'package:waste_food_management/features/home/presentation/sections/header_section.dart';
-
-import '../../../../../../../app/app_routes.dart';
+import 'package:provider/provider.dart';
 import '../../../../../../../app/app_theme.dart';
 import '../../../../../../../core/constants/app_colors.dart';
-import '../../../../../../../core/constants/app_image.dart';
 import '../../../../../../auth/data/model/community_section_model.dart';
-import '../../../../../../auth/data/model/donation_history_model.dart';
 import '../../../../../../auth/data/model/faq_item_model.dart';
 import '../../../../../../auth/data/model/ngo_model.dart';
+import '../../../../../../auth/provider/generic_auth_provider.dart';
 import '../../../../sections/base_screen.dart';
 import '../../../../sections/community_section.dart';
-import '../../../../sections/donation_history_section.dart';
 import '../../../../sections/faq_section.dart';
+import '../../../../sections/header_section.dart';
 import '../../../../sections/info_cards_section.dart';
-import '../../../../sections/myposts_tab_section.dart';
-import '../../../../sections/donor_recent_section.dart';
-import '../../../donor/presentation/screens/food_donation_list_screen.dart';
+import '../../../donor/presentation/screens/donor_notification_screen.dart';
+import '../section/volunteer_tab_section.dart';
 
 class VolunteerHomeScreen extends StatefulWidget {
   static String routeName = "volunteer-home";
-
   const VolunteerHomeScreen({super.key});
 
   @override
-  State<VolunteerHomeScreen> createState() => _ReceiverHomeScreenState();
+  State<VolunteerHomeScreen> createState() => _VolunteerHomeScreenState();
 }
 
-class _ReceiverHomeScreenState extends State<VolunteerHomeScreen> with TickerProviderStateMixin {
+class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  final donationHistoryList =[
-    DonationHistoryModel(
-      id: "324800",
-      timeAgo: "3 Days Ago",
-      title: "Rice Bowl with curry on",
-      quantity: "10 Plate",
-      status: "Completed",
-      image: "assets/images/splash_screen/splashscreen_1.png",
-
-    ),
-  ];
-
-  final ngoList = [
-    NGOModel(
-      name: "Sks",
-      pickupTime: "2.5km",
-      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-    ),
-    NGOModel(
-      name: "Hope NGO",
-      pickupTime: "1.2km",
-      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-    ),
-    NGOModel(
-      name: "Helping Hands",
-      pickupTime: "3.0km",
-      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-    ),
-    NGOModel(
-      name: "Food For All",
-      pickupTime: "4.5km",
-      imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-    ),
-  ];
 
   final communityList = [
     CommunitySectionModel(
@@ -74,114 +33,77 @@ class _ReceiverHomeScreenState extends State<VolunteerHomeScreen> with TickerPro
       quantity: "50kg",
       status: "Know More",
       image: "assets/images/splash_screen/splashscreen_1.png",
-      onTap: () {
-        print("Card 1 tapped");
-      },
-    ),
-    CommunitySectionModel(
-      id: "2",
-      timeAgo: "1d ago",
-      title: "Join our volunteer program",
-      quantity: "30 volunteers",
-      status: "Join Now",
-      image: "assets/images/splash_screen/splashscreen_1.png",
-      onTap: () {
-        print("Card 2 tapped");
-      },
+      onTap: () => print("Card 1 tapped"),
     ),
   ];
-
-
-
-
 
   final faqList = [
-    FaqItem(
-      question: "Who will pick up the food?",
-      answer: "Verified volunteers or nearby receivers will pick up the food.",
-    ),
-    FaqItem(
-      question: "Can we perform a one-time donation?",
-      answer: "Yes, you can donate only once if you want.",
-    ),
-    FaqItem(
-      question: "Is the donation free?",
-      answer: "Yes, all donations are completely free of cost.",
-    ),
+    FaqItem(question: "How do I start a delivery?", answer: "Go to the 'Requests' tab, find an approved request..."),
+    FaqItem(question: "Is there a time limit?", answer: "Yes, 1-2 hours to ensure freshness."),
   ];
-
-
-
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<GenericAuthProvider>(context);
+    final String userName = authProvider.userData?['profile']?['name'] ?? "User";
+    final String userRole = authProvider.selectedRole?.toUpperCase() ?? "VOLUNTEER";
     final double screenHeight = MediaQuery.of(context).size.height * 0.01;
+
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: BaseScreen(child: Column(children: [
+        child: SingleChildScrollView( // পুরো স্ক্রিন স্ক্রল হবে
+          child: BaseScreen(
+            child: Column(
+              children: [
+                HeaderSection(
+                  name: userName,
+                  role: userRole,
+                  notificationCount: 1,
+                  noticicationOnActionTap: () {
+                    Navigator.pushNamed(context, DonorNotificationScreen.routeName);
+                  },
+                ),
+                SizedBox(height: screenHeight * 2),
+                InfoCardsSection(
+                  title1: "Donations",
+                  value1: authProvider.totalDonations,
+                  color1: AppColor.backgrouGray,
+                  title2: "Received",
+                  value2: authProvider.totalReceived,
+                  color2: AppData.primaryColor.withOpacity(0.6),
+                  title3: "Points",
+                  value3: 1000,
+                  color3: AppColor.backgrouGray,
+                ),
+                SizedBox(height: screenHeight * 2),
 
-            HeaderSection(
-                name: "Mandeep", role: "Volunteer", notificationCount: 1, noticicationOnActionTap: () { Navigator.pushNamed(context, DonorNotificationScreen.routeName); },),
-            SizedBox(height: screenHeight,),
+                // ট্যাব সেকশন
+                VolunteerTabSection(tabController: _tabController),
 
-
-            InfoCardsSection(
-              title1: "Donations",
-              value1: 120,
-              color1: AppColor.backgrouGray,
-
-              title2: "Feedback",
-              value2: 500,
-              color2: AppData.primaryColor.withOpacity(0.6),
-
-              title3: "Points earned",
-              value3: 1000,
-              color3: AppColor.backgrouGray,
+                SizedBox(height: screenHeight * 2),
+                CommunitySection(
+                  list: communityList,
+                  onActionTab: () => print("View Feed tapped!"),
+                ),
+                SizedBox(height: screenHeight * 2),
+                FaqSection(faqs: faqList),
+              ],
             ),
-            SizedBox(height: screenHeight,),
-
-            MyPostsTabSection(tabController: _tabController),
-            SizedBox(height: screenHeight,),
-            // DonationHistorySection(list: donationHistoryList,),
-
-            SizedBox(height: screenHeight,),
-            // NgoNearYouSection(list: ngoList, onActionTap: () {  },),
-            // DonorRecentSection(
-            //   onActionTap: () {
-            //     Navigator.push(
-            //       context,
-            //       AppRoutes.smooth(const FoodDonationListScreen()),
-            //     );
-            //   },
-            // ),
-
-            SizedBox(height: screenHeight,),
-            // const CommunitySection(),
-            CommunitySection(
-              list: communityList,
-              onActionTab: () {
-                print("View Feed tapped!");
-              },
-            ),
-            SizedBox(height: screenHeight,),
-            FaqSection(faqs: faqList),
-
-
-          ])),
+          ),
         ),
       ),
     );
   }
-}
+} // <-- এই ব্র্যাকেটটি আগে মিসিং ছিল

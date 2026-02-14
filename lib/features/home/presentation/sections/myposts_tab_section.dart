@@ -401,6 +401,181 @@
 //     );
 //   }
 // }
+//
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import '../../../../app/app_theme.dart';
+// import '../../../../core/constants/app_colors.dart';
+// import '../screens/donor/presentation/provider/donor_provider.dart';
+// import '../screens/donor/presentation/screens/section/create_donation_dialog.dart';
+//
+// class MyPostsTabSection extends StatefulWidget {
+//   final TabController tabController;
+//
+//   const MyPostsTabSection({super.key, required this.tabController});
+//
+//   @override
+//   State<MyPostsTabSection> createState() => _MyPostsTabSectionState();
+// }
+//
+// class _MyPostsTabSectionState extends State<MyPostsTabSection> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.microtask(() => context.read<DonorProvider>().fetchRequests());
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         TabBar(
+//           tabAlignment: TabAlignment.start,
+//           isScrollable: true,
+//           controller: widget.tabController,
+//           labelColor: AppColor.green,
+//           unselectedLabelColor: AppColor.black,
+//           indicatorColor: AppColor.lightGreen,
+//           tabs: const [
+//             Tab(text: "My Post"),
+//             Tab(text: "Receivers Requests"),
+//           ],
+//         ),
+//         SizedBox(
+//           height: 350, // আপনার চাওয়া অনুযায়ী হাইট ৩৫০
+//           child: TabBarView(
+//             controller: widget.tabController,
+//             children: [
+//               _buildMyPostsTab(context),
+//               _buildReceiversRequestsTab(),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildMyPostsTab(BuildContext context) {
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.all(16),
+//       child: Card(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             children: [
+//               const SizedBox(height: 40),
+//               Text("Nothing till now", style: AppData.heading2.copyWith(color: AppColor.black.withOpacity(0.6))),
+//               const SizedBox(height: 15),
+//               Divider(thickness: 1, color: AppColor.black.withOpacity(0.5)),
+//               const SizedBox(height: 15),
+//               Text("Do You Have Some food to donate?", style: AppData.heading2, textAlign: TextAlign.center),
+//               const SizedBox(height: 15),
+//               ElevatedButton.icon(
+//                 onPressed: () => showDialog(context: context, builder: (_) => CreateDonationDialog()),
+//                 icon: const Icon(Icons.add, color: AppColor.white),
+//                 label: Text("Create Donation Post", style: AppData.heading2.copyWith(color: AppColor.white)),
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: AppColor.green,
+//                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//                 ),
+//               ),
+//               const SizedBox(height: 40),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildReceiversRequestsTab() {
+//     return Consumer<DonorProvider>(
+//       builder: (context, donorPro, _) {
+//         if (donorPro.receiverRequests.isEmpty) {
+//           return const Center(child: Text("No requests received yet"));
+//         }
+//
+//         return ListView.builder(
+//           padding: const EdgeInsets.all(16),
+//           itemCount: donorPro.receiverRequests.length,
+//           itemBuilder: (context, index) {
+//             final request = donorPro.receiverRequests[index];
+//             final receiverId = request['receiverId'];
+//
+//             return FutureBuilder<DocumentSnapshot>(
+//               future: FirebaseFirestore.instance.collection('posts').doc(request['postId']).get(),
+//               builder: (context, postSnapshot) {
+//                 if (!postSnapshot.hasData) return const SizedBox();
+//                 final postData = postSnapshot.data!.data() as Map<String, dynamic>;
+//
+//                 return FutureBuilder<DocumentSnapshot>(
+//                   // accounts কালেকশন থেকে ডাটা ফেচ করা
+//                   future: FirebaseFirestore.instance.collection('accounts').doc(receiverId).get(),
+//                   builder: (context, accSnapshot) {
+//                     String contactPerson = "Loading...";
+//                     if (accSnapshot.hasData && accSnapshot.data!.exists) {
+//                       final accData = accSnapshot.data!.data() as Map<String, dynamic>;
+//                       // আপনার ডাটা স্ট্রাকচার: profile -> contactPerson
+//                       contactPerson = accData['profile']?['contactPerson'] ?? "No Name";
+//                     }
+//
+//                     return Card(
+//                       margin: const EdgeInsets.only(bottom: 16),
+//                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//                       elevation: 3,
+//                       child: Column(
+//                         children: [
+//                           ListTile(
+//                             contentPadding: const EdgeInsets.all(10),
+//                             leading: ClipRRect(
+//                               borderRadius: BorderRadius.circular(8),
+//                               child: (postData['imageUrls'] != null && (postData['imageUrls'] as List).isNotEmpty)
+//                                   ? Image.network(postData['imageUrls'][0], width: 60, height: 60, fit: BoxFit.cover)
+//                                   : const Icon(Icons.fastfood, size: 40),
+//                             ),
+//                             title: Text(postData['foodName'] ?? "Food", style: const TextStyle(fontWeight: FontWeight.bold)),
+//                             subtitle: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text("Quantity: ${postData['quantity']}"),
+//                                 Text("By: $contactPerson", style: TextStyle(color: AppColor.green, fontWeight: FontWeight.bold)),
+//                               ],
+//                             ),
+//                           ),
+//                           const Divider(height: 1),
+//                           Padding(
+//                             padding: const EdgeInsets.all(8),
+//                             child: Row(
+//                               mainAxisAlignment: MainAxisAlignment.end,
+//                               children: [
+//                                 TextButton(
+//                                   onPressed: () => donorPro.handleRequest(request['requestId'], request['postId'], 'rejected'),
+//                                   child: const Text("Reject", style: TextStyle(color: Colors.red)),
+//                                 ),
+//                                 const SizedBox(width: 8),
+//                                 ElevatedButton(
+//                                   style: ElevatedButton.styleFrom(backgroundColor: AppColor.green),
+//                                   onPressed: () => donorPro.handleRequest(request['requestId'], request['postId'], 'approved'),
+//                                   child: const Text("Approve", style: TextStyle(color: Colors.white)),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     );
+//                   },
+//                 );
+//               },
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -443,7 +618,7 @@ class _MyPostsTabSectionState extends State<MyPostsTabSection> {
           ],
         ),
         SizedBox(
-          height: 350, // আপনার চাওয়া অনুযায়ী হাইট ৩৫০
+          height: 350,
           child: TabBarView(
             controller: widget.tabController,
             children: [
@@ -509,13 +684,11 @@ class _MyPostsTabSectionState extends State<MyPostsTabSection> {
                 final postData = postSnapshot.data!.data() as Map<String, dynamic>;
 
                 return FutureBuilder<DocumentSnapshot>(
-                  // accounts কালেকশন থেকে ডাটা ফেচ করা
                   future: FirebaseFirestore.instance.collection('accounts').doc(receiverId).get(),
                   builder: (context, accSnapshot) {
                     String contactPerson = "Loading...";
                     if (accSnapshot.hasData && accSnapshot.data!.exists) {
                       final accData = accSnapshot.data!.data() as Map<String, dynamic>;
-                      // আপনার ডাটা স্ট্রাকচার: profile -> contactPerson
                       contactPerson = accData['profile']?['contactPerson'] ?? "No Name";
                     }
 
@@ -549,12 +722,18 @@ class _MyPostsTabSectionState extends State<MyPostsTabSection> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 TextButton(
+                                  style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                                  ),
                                   onPressed: () => donorPro.handleRequest(request['requestId'], request['postId'], 'rejected'),
                                   child: const Text("Reject", style: TextStyle(color: Colors.red)),
                                 ),
                                 const SizedBox(width: 8),
                                 ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: AppColor.green),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.green,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                                  ),
                                   onPressed: () => donorPro.handleRequest(request['requestId'], request['postId'], 'approved'),
                                   child: const Text("Approve", style: TextStyle(color: Colors.white)),
                                 ),

@@ -1,361 +1,19 @@
-// // import 'package:flutter/cupertino.dart';
-// // import 'package:flutter/material.dart';
-// // import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
-// // import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/myreceive_tab_section.dart';
-// // import 'package:waste_food_management/features/home/presentation/sections/header_section.dart';
-// //
-// // import '../../../../../../../app/app_routes.dart';
-// // import '../../../../../../../app/app_theme.dart';
-// // import '../../../../../../../core/constants/app_colors.dart';
-// // import '../../../../../../../core/constants/app_image.dart';
-// // import '../../../../../../auth/data/model/community_section_model.dart';
-// // import '../../../../../../auth/data/model/donation_history_model.dart';
-// // import '../../../../../../auth/data/model/faq_item_model.dart';
-// // import '../../../../../../auth/data/model/ngo_model.dart';
-// // import '../../../../sections/base_screen.dart';
-// // import '../../../../sections/community_section.dart';
-// // import '../../../../sections/donation_history_section.dart';
-// // import '../../../../sections/faq_section.dart';
-// // import '../../../../sections/info_cards_section.dart';
-// // import '../../../../sections/myposts_tab_section.dart';
-// // import '../../../../sections/ngo_near_section.dart';
-// // import '../../../donor/presentation/screens/food_donation_list_screen.dart';
-// //
-// // class ReceiverHomeScreen extends StatefulWidget {
-// //   static String routeName = "receiver-home";
-// //
-// //   const ReceiverHomeScreen({super.key});
-// //
-// //   @override
-// //   State<ReceiverHomeScreen> createState() => _ReceiverHomeScreenState();
-// // }
-// //
-// // class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> with TickerProviderStateMixin {
-// //   late TabController _tabController;
-// //   final donationHistoryList =[
-// //     DonationHistoryModel(
-// //       id: "324800",
-// //       timeAgo: "3 Days Ago",
-// //       title: "Rice Bowl with curry on",
-// //       quantity: "10 Plate",
-// //       status: "Completed",
-// //       image: "assets/images/splash_screen/splashscreen_1.png",
-// //
-// //     ),
-// //   ];
-// //
-// //   final ngoList = [
-// //     NGOModel(
-// //       name: "Sks",
-// //       pickupTime: "2.5km",
-// //       imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-// //     ),
-// //     NGOModel(
-// //       name: "Hope NGO",
-// //       pickupTime: "1.2km",
-// //       imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-// //     ),
-// //     NGOModel(
-// //       name: "Helping Hands",
-// //       pickupTime: "3.0km",
-// //       imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-// //     ),
-// //     NGOModel(
-// //       name: "Food For All",
-// //       pickupTime: "4.5km",
-// //       imageUrl: "assets/images/splash_screen/splashscreen_1.png", location: '', foodRequirement: '',
-// //     ),
-// //   ];
-// //
-// //   final communityList = [
-// //     CommunitySectionModel(
-// //       id: "1",
-// //       timeAgo: "2h ago",
-// //       title: "We visit places to serve people",
-// //       quantity: "50kg",
-// //       status: "Know More",
-// //       image: "assets/images/splash_screen/splashscreen_1.png",
-// //       onTap: () {
-// //         print("Card 1 tapped");
-// //       },
-// //     ),
-// //     CommunitySectionModel(
-// //       id: "2",
-// //       timeAgo: "1d ago",
-// //       title: "Join our volunteer program",
-// //       quantity: "30 volunteers",
-// //       status: "Join Now",
-// //       image: "assets/images/splash_screen/splashscreen_1.png",
-// //       onTap: () {
-// //         print("Card 2 tapped");
-// //       },
-// //     ),
-// //   ];
-// //
-// //
-// //
-// //
-// //
-// //   final faqList = [
-// //     FaqItem(
-// //       question: "Who will pick up the food?",
-// //       answer: "Verified volunteers or nearby receivers will pick up the food.",
-// //     ),
-// //     FaqItem(
-// //       question: "Can we perform a one-time donation?",
-// //       answer: "Yes, you can donate only once if you want.",
-// //     ),
-// //     FaqItem(
-// //       question: "Is the donation free?",
-// //       answer: "Yes, all donations are completely free of cost.",
-// //     ),
-// //   ];
-// //
-// //
-// //
-// //
-// //   @override
-// //   void initState() {
-// //     super.initState();
-// //     _tabController = TabController(length: 2, vsync: this);
-// //   }
-// //   @override
-// //   void dispose() {
-// //     // TODO: implement dispose
-// //     _tabController.dispose();
-// //     super.dispose();
-// //   }
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     final double screenHeight = MediaQuery.of(context).size.height * 0.01;
-// //     return Scaffold(
-// //       body: SafeArea(
-// //         child: SingleChildScrollView(
-// //           child: BaseScreen(child: Column(children: [
-// //
-// //             HeaderSection(
-// //                 name: "Mandeep", role: "Receiver", notificationCount: 1, noticicationOnActionTap: () { Navigator.pushNamed(context, DonorNotificationScreen.routeName); },),
-// //             SizedBox(height: screenHeight,),
-// //
-// //
-// //             InfoCardsSection(
-// //               title1: "Donations",
-// //               value1: 120,
-// //               color1: AppColor.backgrouGray,
-// //
-// //               title2: "Feedback",
-// //               value2: 500,
-// //               color2: AppData.primaryColor.withOpacity(0.6),
-// //
-// //               title3: "Points earned",
-// //               value3: 1000,
-// //               color3: AppColor.backgrouGray,
-// //             ),
-// //             SizedBox(height: screenHeight,),
-// //
-// //
-// //             ReceiverTabSection(),
-// //             SizedBox(height: screenHeight,),
-// //             // DonationHistorySection(list: donationHistoryList, onActionTap: () {  },),
-// //
-// //             SizedBox(height: screenHeight,),
-// //             NgoNearYouSection(
-// //               onActionTap: () {
-// //                 Navigator.push(
-// //                   context,
-// //                   AppRoutes.smooth(const FoodDonationListScreen()),
-// //                 );
-// //               },
-// //             ),
-// //
-// //             SizedBox(height: screenHeight,),
-// //             // const CommunitySection(),
-// //             CommunitySection(
-// //               list: communityList,
-// //               onActionTab: () {
-// //                 print("View Feed tapped!");
-// //               },
-// //             ),
-// //             SizedBox(height: screenHeight,),
-// //             FaqSection(faqs: faqList),
-// //
-// //
-// //           ])),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-//
-//
-// import 'package:flutter/material.dart';
-// import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
-// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/myreceive_tab_section.dart';
-// import '../../../../../../../app/app_routes.dart';
-// import '../../../../../../../app/app_theme.dart';
-// import '../../../../../../../core/constants/app_colors.dart';
-// import '../../../../../../auth/data/model/community_section_model.dart';
-// import '../../../../../../auth/data/model/donation_history_model.dart';
-// import '../../../../../../auth/data/model/faq_item_model.dart';
-// import '../../../../sections/base_screen.dart';
-// import '../../../../sections/community_section.dart';
-// import '../../../../sections/faq_section.dart';
-// import '../../../../sections/header_section.dart';
-// import '../../../../sections/info_cards_section.dart';
-// import '../../../../sections/ngo_near_section.dart';
-// import '../../../donor/presentation/screens/food_donation_list_screen.dart';
-//
-// class ReceiverHomeScreen extends StatefulWidget {
-//   static String routeName = "receiver-home";
-//
-//   const ReceiverHomeScreen({super.key});
-//
-//   @override
-//   State<ReceiverHomeScreen> createState() => _ReceiverHomeScreenState();
-// }
-//
-// class _ReceiverHomeScreenState extends State<ReceiverHomeScreen>
-//     with TickerProviderStateMixin {
-//
-//   final donationHistoryList = [
-//     DonationHistoryModel(
-//       id: "324800",
-//       timeAgo: "3 Days Ago",
-//       title: "Rice Bowl with curry",
-//       quantity: "10 Plates",
-//       status: "Completed",
-//       image: "assets/images/splash_screen/splashscreen_1.png",
-//     ),
-//   ];
-//
-//
-//
-//   final communityList = [
-//     CommunitySectionModel(
-//       id: "1",
-//       timeAgo: "2h ago",
-//       title: "We visit places to serve people",
-//       quantity: "50kg",
-//       status: "Know More",
-//       image: "assets/images/splash_screen/splashscreen_1.png",
-//       onTap: () => print("Card 1 tapped"),
-//     ),
-//     CommunitySectionModel(
-//       id: "2",
-//       timeAgo: "1d ago",
-//       title: "Join our volunteer program",
-//       quantity: "30 volunteers",
-//       status: "Join Now",
-//       image: "assets/images/splash_screen/splashscreen_1.png",
-//       onTap: () => print("Card 2 tapped"),
-//     ),
-//   ];
-//
-//   final faqList = [
-//     FaqItem(
-//       question: "Who will pick up the food?",
-//       answer: "Verified volunteers or nearby receivers will pick up the food.",
-//     ),
-//     FaqItem(
-//       question: "Can we perform a one-time donation?",
-//       answer: "Yes, you can donate only once if you want.",
-//     ),
-//     FaqItem(
-//       question: "Is the donation free?",
-//       answer: "Yes, all donations are completely free of cost.",
-//     ),
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final double screenHeight = MediaQuery.of(context).size.height * 0.01;
-//
-//     return Scaffold(
-//       body: SafeArea(
-//         child: SingleChildScrollView(
-//           child: BaseScreen(
-//             child: Column(
-//               children: [
-//                 /// HEADER
-//                 HeaderSection(
-//                   name: "Mandeep",
-//                   role: "Receiver",
-//                   notificationCount: 1,
-//                   noticicationOnActionTap: () {
-//                     Navigator.pushNamed(
-//                       context,
-//                       DonorNotificationScreen.routeName,
-//                     );
-//                   },
-//                 ),
-//                 SizedBox(height: screenHeight),
-//
-//                 /// INFO CARDS
-//                 InfoCardsSection(
-//                   title1: "Donations",
-//                   value1: 120,
-//                   color1: AppColor.backgrouGray,
-//                   title2: "Feedback",
-//                   value2: 500,
-//                   color2: AppData.primaryColor.withOpacity(0.6),
-//                   title3: "Points earned",
-//                   value3: 1000,
-//                   color3: AppColor.backgrouGray,
-//                 ),
-//                 SizedBox(height: screenHeight),
-//
-//                 /// RECEIVER TAB SECTION
-//                 const ReceiverTabSection(),
-//                 SizedBox(height: screenHeight),
-//
-//                 /// NEARBY NGOS
-//                 NgoNearYouSection(
-//                   onActionTap: () {
-//                     Navigator.push(
-//                       context,
-//                       AppRoutes.smooth(const FoodDonationListScreen()),
-//                     );
-//                   },
-//                 ),
-//                 SizedBox(height: screenHeight),
-//
-//                 /// COMMUNITY SECTION
-//                 CommunitySection(
-//                   list: communityList,
-//                   onActionTab: () => print("View Feed tapped!"),
-//                 ),
-//                 SizedBox(height: screenHeight),
-//
-//                 /// FAQ SECTION
-//                 FaqSection(faqs: faqList),
-//                 SizedBox(height: screenHeight),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/donor_notification_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/myreceive_tab_section.dart';
-import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/receiver_food_donation_list_sction.dart';
-import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/receiver_all_post.dart';
 import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/recent_receiver_section.dart';
-import '../../../../../../../app/app_routes.dart';
+
 import '../../../../../../../app/app_theme.dart';
 import '../../../../../../../core/constants/app_colors.dart';
 import '../../../../../../auth/data/model/community_section_model.dart';
 import '../../../../../../auth/data/model/faq_item_model.dart';
+import '../../../../../../auth/provider/generic_auth_provider.dart';
 import '../../../../sections/base_screen.dart';
 import '../../../../sections/community_section.dart';
-import '../../../../sections/donor_recent_section.dart';
 import '../../../../sections/faq_section.dart';
 import '../../../../sections/header_section.dart';
 import '../../../../sections/info_cards_section.dart';
-import '../../../donor/presentation/screens/food_donation_list_screen.dart';
 
 class ReceiverHomeScreen extends StatefulWidget {
   static String routeName = "receiver-home";
@@ -366,10 +24,21 @@ class ReceiverHomeScreen extends StatefulWidget {
   State<ReceiverHomeScreen> createState() => _ReceiverHomeScreenState();
 }
 
-class _ReceiverHomeScreenState extends State<ReceiverHomeScreen>
-    with TickerProviderStateMixin {
+class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // স্ক্রিন ওপেন হওয়ার সাথে সাথে লেটেস্ট ডাটা নিশ্চিত করা
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final auth = context.read<GenericAuthProvider>();
+        auth.fetchUserData();
+      }
+    });
+  }
 
-  final communityList = [
+  // কমিউনিটি লিস্ট ডাটা
+  final List<CommunitySectionModel> communityList = [
     CommunitySectionModel(
       id: "1",
       timeAgo: "2h ago",
@@ -377,31 +46,40 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen>
       quantity: "50kg",
       status: "Know More",
       image: "assets/images/splash_screen/splashscreen_1.png",
-      onTap: () => print("Card 1 tapped"),
+      onTap: () => debugPrint("Card 1 tapped"),
     ),
     CommunitySectionModel(
       id: "2",
-      timeAgo: "1d ago",
-      title: "Join our volunteer program",
-      quantity: "30 volunteers",
-      status: "Join Now",
+      timeAgo: "5h ago",
+      title: "Food distribution in local area",
+      quantity: "20kg",
+      status: "Know More",
       image: "assets/images/splash_screen/splashscreen_1.png",
-      onTap: () => print("Card 2 tapped"),
+      onTap: () => debugPrint("Card 2 tapped"),
     ),
   ];
 
-  final faqList = [
+  // FAQ লিস্ট ডাটা
+  final List<FaqItem> faqList = [
     FaqItem(
       question: "Who will pick up the food?",
-      answer: "Verified volunteers or nearby receivers will pick up the food.",
+      answer: "Verified volunteers or nearby receivers will pick up the food directly from the donor's location.",
     ),
     FaqItem(
-      question: "Can we perform a one-time donation?",
-      answer: "Yes, you can donate only once if you want.",
+      question: "How does the Volunteer help?",
+      answer: "Volunteers accept pickup requests, collect the food from the donor, and deliver it safely to the receiver's address.",
     ),
     FaqItem(
-      question: "Is the donation free?",
-      answer: "Yes, all donations are completely free of cost.",
+      question: "Can I join as a Volunteer?",
+      answer: "Yes, anyone can register as a volunteer to help transport food and bridge the gap between donors and those in need.",
+    ),
+    FaqItem(
+      question: "Is there any cost for the Receiver?",
+      answer: "No, the food is completely free. The goal is to manage food waste and serve the community through generous donations.",
+    ),
+    FaqItem(
+      question: "What should Donors ensure before donating?",
+      answer: "Donors should ensure the food is fresh, hygienic, and properly packed before the volunteer or receiver arrives for pickup.",
     ),
   ];
 
@@ -410,80 +88,69 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen>
     final double screenHeight = MediaQuery.of(context).size.height * 0.01;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: BaseScreen(
-            child: Column(
-              children: [
-                /// HEADER
-                HeaderSection(
-                  name: "Mandeep",
-                  role: "Receiver",
-                  notificationCount: 1,
-                  noticicationOnActionTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      DonorNotificationScreen.routeName,
-                    );
-                  },
+        child: Consumer<GenericAuthProvider>(
+          builder: (context, auth, _) {
+            // প্রোফাইল থেকে নাম এবং ডাটা নেওয়া
+            final profile = auth.userData?['profile'];
+            final displayName = profile?['contactPerson'] ??
+                profile?['businessOrFullName'] ?? "Receiver";
+            final displayRole = auth.userData?['role'] ?? "Receiver";
+
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: BaseScreen(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// --- HEADER SECTION ---
+                    HeaderSection(
+                      name: displayName,
+                      role: displayRole.toString().toUpperCase(),
+                      notificationCount: 1,
+                      noticicationOnActionTap: () => Navigator.pushNamed(
+                          context, DonorNotificationScreen.routeName),
+                    ),
+                    SizedBox(height: screenHeight * 2),
+
+                    /// --- INFO CARDS ---
+                    InfoCardsSection(
+                      title1: "Received",
+                      value1: auth.totalReceived, // এখানে এখন সঠিক Approved সংখ্যা দেখাবে
+                      color1: AppColor.soft_green,
+                      title2: "Feedback",
+                      value2: 0,
+                      color2:AppColor.green,
+                      title3: "Points",
+                      value3: auth.totalReceived * 10,
+                      color3: AppColor.soft_green,
+                    ),
+                    SizedBox(height: screenHeight * 3),
+
+                    /// --- RECEIVER TAB SECTION ---
+                    const ReceiverTabSection(),
+                    SizedBox(height: screenHeight * 2),
+
+                    /// --- RECENT DONATIONS SECTION ---
+                    const ReceiverRecentSection(),
+                    SizedBox(height: screenHeight * 3),
+
+                    /// --- COMMUNITY SECTION ---
+                    CommunitySection(
+                      list: communityList,
+                      onActionTab: () => debugPrint("View Feed tapped!"),
+                    ),
+                    SizedBox(height: screenHeight * 2),
+
+                    /// --- FAQ SECTION ---
+                    FaqSection(faqs: faqList),
+                    SizedBox(height: screenHeight * 4),
+                  ],
                 ),
-                SizedBox(height: screenHeight),
-
-                /// INFO CARDS
-                InfoCardsSection(
-                  title1: "Donations",
-                  value1: 120,
-                  color1: AppColor.backgrouGray,
-                  title2: "Feedback",
-                  value2: 500,
-                  color2: AppData.primaryColor.withOpacity(0.6),
-                  title3: "Points earned",
-                  value3: 1000,
-                  color3: AppColor.backgrouGray,
-                ),
-                SizedBox(height: screenHeight),
-
-                /// RECEIVER TAB SECTION
-                const ReceiverTabSection(),
-                SizedBox(height: screenHeight),
-
-                /// NEARBY NGOS
-                // ReceiverRecentSection(
-                //   onActionTap: () {
-                //     Navigator.push(
-                //       context,
-                //       AppRoutes.smooth(const ReceiverFoodDonationListScreen()),
-                //     );
-                //   },
-                // ),
-
-                ReceiverRecentSection(),
-
-                // ReceiverGenericDonorSection(),
-                // ReceiverGenericDonorSection(
-                //   onActionTap: () {
-                //     Navigator.push(
-                //       context,
-                //       AppRoutes.smooth(const ReceiverFoodDonationListScreen()),
-                //     );
-                //   },
-                // ),
-
-                SizedBox(height: screenHeight),
-
-                /// COMMUNITY SECTION
-                CommunitySection(
-                  list: communityList,
-                  onActionTab: () => print("View Feed tapped!"),
-                ),
-                SizedBox(height: screenHeight),
-
-                /// FAQ SECTION
-                FaqSection(faqs: faqList),
-                SizedBox(height: screenHeight),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
