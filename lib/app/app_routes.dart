@@ -299,6 +299,7 @@ import 'package:waste_food_management/features/home/presentation/screens/receive
 import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_home_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/section/volunteer_notification_section.dart';
 import '../features/home/presentation/screens/donor/presentation/screens/donor_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/home/presentation/screens/generic_main_screen.dart';
@@ -376,6 +377,9 @@ class AppRoutes {
     // Volunteer Screens
     VolunteerScreen.routeName: () => VolunteerScreen(),
     VolunteerHomeScreen.routeName: () => VolunteerHomeScreen(),
+
+
+    VolunteerNotificationSection.routeName: () => VolunteerNotificationSection(),
   };
 
   /// =========================================

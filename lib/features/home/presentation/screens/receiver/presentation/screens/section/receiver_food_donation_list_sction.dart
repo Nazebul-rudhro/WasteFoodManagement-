@@ -186,7 +186,70 @@
 //   }
 // }
 
-// File: lib/features/home/presentation/screens/receiver/screens/receiver_food_donation_list_sction.dart
+// // File: lib/features/home/presentation/screens/receiver/screens/receiver_food_donation_list_sction.dart
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:provider/provider.dart';
+// import '../../../../../../../auth/data/model/post_model.dart';
+// import '../../provider/receiver_provider.dart';
+// import '../widgets/receiver_post_card.dart';
+//
+// class ReceiverFoodDonationListScreen extends StatelessWidget {
+//   const ReceiverFoodDonationListScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final provider = context.watch<ReceiverProvider>();
+//
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("All Donations"),
+//         backgroundColor: Colors.green.shade400,
+//       ),
+//       body: StreamBuilder<QuerySnapshot>(
+//         stream: FirebaseFirestore.instance
+//             .collection('posts')
+//             .orderBy('createdAt', descending: true)
+//             .snapshots(),
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator(color: Colors.green));
+//           }
+//
+//           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+//             return const Center(child: Text("No donations found"));
+//           }
+//
+//           final posts = snapshot.data!.docs.map((doc) => PostModel.fromSnapshot(doc)).toList();
+//
+//           return GridView.builder(
+//             padding: const EdgeInsets.all(10),
+//             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//               crossAxisCount: 2,
+//               mainAxisSpacing: 10,
+//               crossAxisSpacing: 10,
+//               childAspectRatio: 0.75,
+//             ),
+//             itemCount: posts.length,
+//             itemBuilder: (context, index) {
+//               final post = posts[index];
+//               final alreadyRequested = provider.myRequests.contains(post.postId);
+//               final isLoading = provider.isRequesting[post.postId] ?? false;
+//
+//               return ReceiverPostCard(
+//                 post: post,
+//                 alreadyRequested: alreadyRequested,
+//                 isLoading: isLoading,
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -199,47 +262,66 @@ class ReceiverFoodDonationListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ReceiverProvider>();
+    // আমরা প্রোভাইডার ওয়াচ করছি না কারণ আমরা সরাসরি কার্ডের ভেতর ওয়াচ করছি।
+    // তবে ইনিশিয়াল ডাটা লোড করার জন্য এটি প্রয়োজন হতে পারে।
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Donations"),
+        title: const Text(
+          "All Donations",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: Colors.green.shade400,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
+        // শুধুমাত্র 'available' পোস্টগুলো দেখানোই রিসিভারের জন্য ভালো
         stream: FirebaseFirestore.instance
             .collection('posts')
+            .where('status', isEqualTo: 'available')
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Colors.green));
+            return const Center(
+                child: CircularProgressIndicator(color: Colors.green));
+          }
+
+          if (snapshot.hasError) {
+            return const Center(child: Text("Something went wrong"));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No donations found"));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.fastfood_outlined, size: 60, color: Colors.grey[400]),
+                  const SizedBox(height: 10),
+                  const Text("No donations available at the moment"),
+                ],
+              ),
+            );
           }
 
-          final posts = snapshot.data!.docs.map((doc) => PostModel.fromSnapshot(doc)).toList();
+          final posts = snapshot.data!.docs
+              .map((doc) => PostModel.fromSnapshot(doc))
+              .toList();
 
           return GridView.builder(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 0.75,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.72, // কার্ডের হাইট অ্যাডজাস্ট করার জন্য
             ),
             itemCount: posts.length,
             itemBuilder: (context, index) {
-              final post = posts[index];
-              final alreadyRequested = provider.myRequests.contains(post.postId);
-              final isLoading = provider.isRequesting[post.postId] ?? false;
-
+              // আমরা শুধু পোস্টটি পাস করব, বাকি সব কার্ড নিজে হ্যান্ডেল করবে
               return ReceiverPostCard(
-                post: post,
-                alreadyRequested: alreadyRequested,
-                isLoading: isLoading,
+                post: posts[index],
               );
             },
           );
