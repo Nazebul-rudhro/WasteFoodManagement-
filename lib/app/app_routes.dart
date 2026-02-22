@@ -297,9 +297,10 @@ import 'package:waste_food_management/features/home/presentation/screens/donor/p
 import 'package:waste_food_management/features/home/presentation/screens/donor/presentation/screens/get_information_details_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_home_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/receiver_screen.dart';
+import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/receiver_notification_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_home_screen.dart';
 import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/screens/volunteer_screen.dart';
-import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/section/volunteer_notification_section.dart';
+import 'package:waste_food_management/features/home/presentation/screens/volunteer/presentation/section/volunteer_notification_screen.dart';
 import '../features/home/presentation/screens/donor/presentation/screens/donor_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/home/presentation/screens/generic_main_screen.dart';
@@ -373,13 +374,15 @@ class AppRoutes {
     // Receiver Screens
     ReceiverScreen.routeName: () => ReceiverScreen(),
     ReceiverHomeScreen.routeName: () => ReceiverHomeScreen(),
+    ReceiverNotificationScreen.routeName:() => ReceiverNotificationScreen(),
 
     // Volunteer Screens
     VolunteerScreen.routeName: () => VolunteerScreen(),
     VolunteerHomeScreen.routeName: () => VolunteerHomeScreen(),
 
-
-    VolunteerNotificationSection.routeName: () => VolunteerNotificationSection(),
+// Routes map এর ভেতর যোগ করুন
+    VolunteerNotificationScreen.routeName: () => const VolunteerNotificationScreen(),
+    // VolunteerNotificationSection.routeName: () => VolunteerNotificationSection(),
   };
 
   /// =========================================
