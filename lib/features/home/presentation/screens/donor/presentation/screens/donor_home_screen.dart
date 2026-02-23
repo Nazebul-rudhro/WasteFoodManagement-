@@ -32,12 +32,10 @@
 //     super.initState();
 //     _tabController = TabController(length: 3, vsync: this);
 //
-//     // পেজ লোড হওয়ার সাথে সাথে ডাটা ফেচ করা
 //     WidgetsBinding.instance.addPostFrameCallback((_) {
 //       if (mounted) {
 //         final auth = context.read<GenericAuthProvider>();
-//         auth.fetchUserData(); // এটি আপনার প্রোফাইল এবং স্ট্যাটাস লোড করবে
-//         // নোট: আপনার প্রোভাইডারে যদি লিসেনার (Stream) থাকে তবে নিচের মেথডগুলো নিজে থেকেই আপডেট হবে
+//         auth.fetchUserData();
 //         auth.countUserStats();
 //       }
 //     });
@@ -49,7 +47,6 @@
 //     super.dispose();
 //   }
 //
-//   // ডামি ডাটা: কমিউনিটি সেকশন
 //   final List<CommunitySectionModel> communityList = [
 //     CommunitySectionModel(
 //       id: "1",
@@ -62,7 +59,6 @@
 //     ),
 //   ];
 //
-//   // ডামি ডাটা: FAQ সেকশন
 //   final List<FaqItem> faqList = [
 //     FaqItem(question: "Who will pick up the food?", answer: "Verified volunteers or nearby receivers."),
 //     FaqItem(question: "Can we perform a one-time donation?", answer: "Yes, you can."),
@@ -71,18 +67,24 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     // স্ক্রিন হাইট রেসপন্সিভ করার জন্য
 //     final h = MediaQuery.of(context).size.height * 0.01;
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       // ডার্ক মোডে রিচ ব্ল্যাক/ডার্ক গ্রে ব্যাকগ্রাউন্ড
+//       backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
 //       body: SafeArea(
 //         child: Consumer<GenericAuthProvider>(
 //           builder: (context, auth, _) {
-//             // প্রোফাইল থেকে নাম এবং রোল বের করা
-//             final profile = auth.userData?['profile'];
-//             final displayName = profile?['contactPerson'] ?? profile?['businessOrFullName'] ?? "User";
-//             final displayRole = auth.userData?['role'] ?? "Donor";
+//             final userData = auth.userData ?? {};
+//             final profile = userData['profile'] as Map<String, dynamic>? ?? {};
+//
+//             final displayName = profile['contactPerson'] ?? profile['businessOrFullName'] ?? "User";
+//             final displayRole = userData['role']?.toString().toUpperCase() ?? "DONOR";
+//
+//             final int points = profile['points'] ?? 0;
+//             final int totalDonations = profile['totalDonations'] ?? 0;
+//             final int totalPosts = auth.totalPosts;
 //
 //             return RefreshIndicator(
 //               onRefresh: () async {
@@ -95,10 +97,10 @@
 //                   child: Column(
 //                     crossAxisAlignment: CrossAxisAlignment.start,
 //                     children: [
-//                       // হেডার সেকশন: নাম, রোল এবং নোটিফিকেশন
+//                       // হেডার সেকশন
 //                       HeaderSection(
 //                         name: displayName,
-//                         role: displayRole.toString().toUpperCase(),
+//                         role: displayRole,
 //                         notificationCount: auth.notificationCount,
 //                         noticicationOnActionTap: () {
 //                           auth.resetNotificationCount();
@@ -106,34 +108,50 @@
 //                         },
 //                       ),
 //
-//                       SizedBox(height: h * 2),
+//                       SizedBox(height: h * 2.5),
 //
-//                       // ইনফো কার্ডস সেকশন: স্ট্যাটাস প্রদর্শন
+//                       // ইনফো কার্ডস সেকশন (Dark Mode Adjusted)
 //                       InfoCardsSection(
 //                         title1: "Donations",
-//                         value1: auth.totalDonations, // এপ্রুভড ডোনেশন সংখ্যা
-//                         color1: AppColor.soft_green,
+//                         value1: totalDonations,
+//                         // ডার্ক মোডে সলিড ডার্ক সারফেস, লাইট মোডে সফট গ্রিন
+//                         color1: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
 //
 //                         title2: "Total Post",
-//                         value2: auth.totalPosts, // মোট করা পোস্টের সংখ্যা (রিয়েল-টাইম)
-//                         color2: AppColor.green,
+//                         value2: totalPosts,
+//                         color2: AppColor.green, // মেইন হাইলাইট গ্রিন
 //
 //                         title3: "Points",
-//                         value3: auth.totalDonations * 10, // প্রতিটি ডোনেশনে ১০ পয়েন্ট
-//                         color3: AppColor.soft_green,
+//                         value3: points,
+//                         color3: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
 //                       ),
 //
 //                       SizedBox(height: h * 3),
 //
-//                       // মাই অ্যাক্টিভিটিস সেকশন (Tabs)
-//                        Text("My Activities",
-//                           style: AppData.heading2,),
-//                       SizedBox(
-//                         height: 400, // ট্যাব সেকশনের জন্য ফিক্সড হাইট
+//                       // মাই অ্যাক্টিভিটিস সেকশন
+//                       Padding(
+//                         padding: const EdgeInsets.symmetric(horizontal: 4),
+//                         child: Text(
+//                             "My Activities",
+//                             style: AppData.heading2.copyWith(
+//                                 color: isDark ? Colors.white : Colors.black87
+//                             )
+//                         ),
+//                       ),
+//                       const SizedBox(height: 12),
+//
+//                       // ট্যাব সেকশন কন্টেইনার
+//                       Container(
+//                         height: 460,
+//                         decoration: BoxDecoration(
+//                           color: isDark ? const Color(0xFF1E1E1E) : Colors.transparent,
+//                           borderRadius: BorderRadius.circular(20),
+//                           border: isDark ? Border.all(color: Colors.white10) : null,
+//                         ),
 //                         child: MyPostsTabSection(tabController: _tabController),
 //                       ),
 //
-//                       SizedBox(height: h * 2),
+//                       SizedBox(height: h * 3),
 //
 //                       // রিসেন্ট ডোনেশন সেকশন
 //                       DonorRecentSection(
@@ -141,17 +159,25 @@
 //                             context, AppRoutes.smooth(const FoodDonationListScreen())),
 //                       ),
 //
-//                       SizedBox(height: h * 2),
-//
-//                       // কমিউনিটি সেকশন
+//                       SizedBox(height: h * 3),
 //                       CommunitySection(list: communityList, onActionTab: () {}),
+//                       SizedBox(height: h * 3),
 //
-//                       SizedBox(height: h * 2),
-//
-//                       // FAQ সেকশন
+//                       // FAQ সেকশন হেডার
+//                       Padding(
+//                         padding: const EdgeInsets.symmetric(horizontal: 4),
+//                         child: Text(
+//                             "Common FAQ",
+//                             style: AppData.heading2.copyWith(
+//                                 color: isDark ? Colors.white : Colors.black87,
+//                                 fontSize: 18
+//                             )
+//                         ),
+//                       ),
+//                       const SizedBox(height: 10),
 //                       FaqSection(faqs: faqList),
 //
-//                       SizedBox(height: h * 4),
+//                       SizedBox(height: h * 6),
 //                     ],
 //                   ),
 //                 ),
@@ -163,7 +189,6 @@
 //     );
 //   }
 // }
-
 
 
 
@@ -201,7 +226,6 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
 
-    // পেজ লোড হওয়ার সাথে সাথে ডাটা ফেচ করা
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final auth = context.read<GenericAuthProvider>();
@@ -217,7 +241,6 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
     super.dispose();
   }
 
-  // ডামি ডাটা: কমিউনিটি সেকশন
   final List<CommunitySectionModel> communityList = [
     CommunitySectionModel(
       id: "1",
@@ -228,9 +251,20 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
       image: "assets/images/splash_screen/splashscreen_1.png",
       onTap: () => debugPrint("Card 1 tapped"),
     ),
+
+    CommunitySectionModel(
+      id: "2",
+      timeAgo: "5h ago",
+      title: "We visit places to serve people",
+      quantity: "70kg",
+      status: "Know More",
+      image: "assets/images/splash_screen/splashscreen_1.png",
+      onTap: () => debugPrint("Card 2 tapped"),
+    ),
+
+
   ];
 
-  // ডামি ডাটা: FAQ সেকশন
   final List<FaqItem> faqList = [
     FaqItem(question: "Who will pick up the food?", answer: "Verified volunteers or nearby receivers."),
     FaqItem(question: "Can we perform a one-time donation?", answer: "Yes, you can."),
@@ -240,26 +274,26 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height * 0.01;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // Adaptive background
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Consumer<GenericAuthProvider>(
           builder: (context, auth, _) {
-            // ১. ডাটাবেজ ম্যাপ স্ট্রাকচার অনুযায়ী ডাটা বের করা
             final userData = auth.userData ?? {};
             final profile = userData['profile'] as Map<String, dynamic>? ?? {};
 
-            // ফিল্ড নেম অনুযায়ী ভ্যালু এসাইন (Donor-এর জন্য)
             final displayName = profile['contactPerson'] ?? profile['businessOrFullName'] ?? "User";
             final displayRole = userData['role']?.toString().toUpperCase() ?? "DONOR";
 
-            // ২. ডাইনামিক পয়েন্ট এবং ডোনেশন কাউন্ট
-            final int points = profile['points'] ?? 0; // Firestore points field
-            final int totalDonations = profile['totalDonations'] ?? 0; // Firestore totalDonations field
-            final int totalPosts = auth.totalPosts; // Provider-এর ইন্টারনাল পোস্ট কাউন্ট
+            final int points = profile['points'] ?? 0;
+            final int totalDonations = profile['totalDonations'] ?? 0;
+            final int totalPosts = auth.totalPosts;
 
             return RefreshIndicator(
+              color: AppColor.primary,
               onRefresh: () async {
                 await auth.fetchUserData();
                 await auth.countUserStats();
@@ -270,7 +304,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // হেডার সেকশন
+                      // --- Header Section ---
                       HeaderSection(
                         name: displayName,
                         role: displayRole,
@@ -281,46 +315,80 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> with TickerProviderSt
                         },
                       ),
 
-                      SizedBox(height: h * 2),
+                      SizedBox(height: h * 2.5),
 
-                      // আপডেট করা ইনফো কার্ডস সেকশন (Dynamic Data)
+                      // --- Info Cards Section (Night Mode Optimized) ---
                       InfoCardsSection(
                         title1: "Donations",
-                        value1: totalDonations, // profile -> totalDonations field
-                        color1: AppColor.soft_green,
+                        value1: totalDonations,
+                        // Dark Mode: Soft tint of Primary, Light Mode: Soft green
+                        color1: isDark
+                            ? AppColor.soft_green
+                            : AppColor.soft_green,
 
                         title2: "Total Post",
-                        value2: totalPosts, // auth.totalPosts (Provider count)
-                        color2: AppColor.green,
+                        value2: totalPosts,
+                        color2: AppColor.green, // Signature brand color
 
                         title3: "Points",
-                        value3: points, // profile -> points field
-                        color3: AppColor.soft_green,
+                        value3: points,
+                        color3: isDark
+                            ? AppColor.soft_green
+                            : AppColor.soft_green,
                       ),
 
                       SizedBox(height: h * 3),
 
-                      // মাই অ্যাক্টিভিটিস সেকশন (Tabs)
-                      Text("My Activities", style: AppData.heading2),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 450,
+                      // --- My Activities Section ---
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                            "My Activities",
+                            style: AppData.heading2.copyWith(
+                                color: isDark ? AppColor.white : AppColor.black
+                            )
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Tab Section Container (Dark Surface)
+                      Container(
+                        height: 460,
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColor.gray.withOpacity(0.1) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          border: isDark ? Border.all(color: AppColor.gray.withOpacity(0.2)) : null,
+                        ),
                         child: MyPostsTabSection(tabController: _tabController),
                       ),
 
-                      SizedBox(height: h * 2),
+                      SizedBox(height: h * 3),
 
-                      // রিসেন্ট ডোনেশন সেকশন
+                      // --- Recent Donations ---
                       DonorRecentSection(
                         onActionTap: () => Navigator.push(
                             context, AppRoutes.smooth(const FoodDonationListScreen())),
                       ),
 
-                      SizedBox(height: h * 2),
+                      SizedBox(height: h * 3),
                       CommunitySection(list: communityList, onActionTab: () {}),
-                      SizedBox(height: h * 2),
+                      SizedBox(height: h * 3),
+
+                      // --- FAQ Section ---
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                            "Common FAQ",
+                            style: AppData.heading2.copyWith(
+                                color: isDark ? AppColor.white : AppColor.black,
+                                fontSize: 18
+                            )
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       FaqSection(faqs: faqList),
-                      SizedBox(height: h * 4),
+
+                      SizedBox(height: h * 6),
                     ],
                   ),
                 ),

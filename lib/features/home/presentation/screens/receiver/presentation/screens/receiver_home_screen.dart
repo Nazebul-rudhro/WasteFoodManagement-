@@ -566,6 +566,306 @@
 
 
 
+//
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/myreceive_tab_section.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/receiver_notification_screen.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/recent_receiver_section.dart';
+// import '../../../../../../../core/constants/app_colors.dart';
+// import '../../../../../../auth/data/model/faq_item_model.dart';
+// import '../../../../../../auth/provider/generic_auth_provider.dart';
+// import '../../../../sections/base_screen.dart';
+// import '../../../../sections/faq_section.dart';
+// import '../../../../sections/header_section.dart';
+// import '../../../../sections/info_cards_section.dart';
+// import '../provider/receiver_provider.dart';
+//
+// class ReceiverHomeScreen extends StatefulWidget {
+//   static String routeName = "receiver-home";
+//   const ReceiverHomeScreen({super.key});
+//
+//   @override
+//   State<ReceiverHomeScreen> createState() => _ReceiverHomeScreenState();
+// }
+//
+// class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchInitialData();
+//   }
+//
+//   void _fetchInitialData() {
+//     Future.microtask(() {
+//       if (mounted) {
+//         context.read<GenericAuthProvider>().fetchUserData();
+//         context.read<ReceiverProvider>().fetchAllPosts();
+//       }
+//     });
+//   }
+//
+//   final List<FaqItem> faqList = [
+//     FaqItem(
+//       question: "Who will pick up the food?",
+//       answer: "Verified volunteers or nearby receivers will pick up the food directly from the donor's location.",
+//     ),
+//     FaqItem(
+//       question: "Is there any cost for the Receiver?",
+//       answer: "No, the food is completely free.",
+//     ),
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // 🔹 দুটি প্রোভাইডারকেই লিসেন করা হচ্ছে
+//     final auth = context.watch<GenericAuthProvider>();
+//     final receiver = context.watch<ReceiverProvider>();
+//
+//     // ১. ডাটাবেজ স্ট্রাকচার অনুযায়ী প্রোফাইল ডাটা বের করা
+//     final userData = auth.userData ?? {};
+//     final profile = userData['profile'] as Map<String, dynamic>? ?? {};
+//
+//     // ২. ফিল্ড নেম ম্যাপিং (আপনার দেয়া ডাটাবেজ অনুযায়ী)
+//     final displayName = profile['contactPerson'] ?? profile['businessOrFullName'] ?? "User";
+//     final int points = profile['points'] ?? 0; // Firestore 'points' field
+//     final int totalReceives = profile['totalReceives'] ?? 0; // Firestore 'totalReceives' field
+//
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF8F9FA),
+//       body: SafeArea(
+//         child: RefreshIndicator(
+//           color: AppColor.green,
+//           onRefresh: () async {
+//             await auth.fetchUserData();
+//             receiver.fetchAllPosts();
+//           },
+//           child: SingleChildScrollView(
+//             physics: const BouncingScrollPhysics(),
+//             child: BaseScreen(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   // --- হেডার সেকশন ---
+//                   HeaderSection(
+//                     name: displayName,
+//                     role: (auth.selectedRole ?? "Receiver").toUpperCase(),
+//                     notificationCount: auth.notificationCount,
+//                     noticicationOnActionTap: () {
+//                       auth.resetNotificationCount();
+//                       Navigator.pushNamed(context, ReceiverNotificationScreen.routeName);
+//                     },
+//                   ),
+//                   const SizedBox(height: 20),
+//
+//                   // --- ইনফো কার্ড সেকশন (রিয়েল-টাইম প্রোফাইল ডাটা) ---
+//                   InfoCardsSection(
+//                     title1: "Pending",
+//                     // রিসিভার প্রোভাইডার থেকে বর্তমানে কয়টি রিকোয়েস্ট পেন্ডিং তা দেখাচ্ছে
+//                     value1: receiver.pendingPosts.length,
+//                     color1: Colors.orange.shade400,
+//
+//                     title2: "Received",
+//                     // ৩. স্ট্যাটিক ক্যালকুলেশন বাদ দিয়ে প্রোফাইল থেকে মোট রিসিভ সংখ্যা দেখাচ্ছে
+//                     value2: totalReceives,
+//                     color2: AppColor.green,
+//
+//                     title3: "Points",
+//                     // ৪. সরাসরি ডাটাবেজের 'points' ফিল্ড থেকে ভ্যালু আসছে
+//                     value3: points,
+//                     color3: Colors.blue.shade400,
+//                   ),
+//
+//                   const SizedBox(height: 30),
+//
+//                   /// --- ট্যাব সেকশন (Activities) ---
+//                   const Padding(
+//                     padding: EdgeInsets.symmetric(horizontal: 4.0),
+//                     child: ReceiverTabSection(),
+//                   ),
+//
+//                   const SizedBox(height: 25),
+//
+//                   /// --- রিসেন্ট পোস্ট সেকশন ---
+//                   const ReceiverRecentSection(),
+//
+//                   /// --- FAQ SECTION ---
+//                   FaqSection(faqs: faqList),
+//
+//                   const SizedBox(height: 25),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+//
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/myreceive_tab_section.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/receiver_notification_screen.dart';
+// import 'package:waste_food_management/features/home/presentation/screens/receiver/presentation/screens/section/recent_receiver_section.dart';
+// import '../../../../../../../core/constants/app_colors.dart';
+// import '../../../../../../auth/data/model/faq_item_model.dart';
+// import '../../../../../../auth/provider/generic_auth_provider.dart';
+// import '../../../../sections/base_screen.dart';
+// import '../../../../sections/faq_section.dart';
+// import '../../../../sections/header_section.dart';
+// import '../../../../sections/info_cards_section.dart';
+// import '../provider/receiver_provider.dart';
+//
+// class ReceiverHomeScreen extends StatefulWidget {
+//   static String routeName = "receiver-home";
+//   const ReceiverHomeScreen({super.key});
+//
+//   @override
+//   State<ReceiverHomeScreen> createState() => _ReceiverHomeScreenState();
+// }
+//
+// class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchInitialData();
+//   }
+//
+//   void _fetchInitialData() {
+//     Future.microtask(() {
+//       if (mounted) {
+//         context.read<GenericAuthProvider>().fetchUserData();
+//         context.read<ReceiverProvider>().fetchAllPosts();
+//       }
+//     });
+//   }
+//
+//   final List<FaqItem> faqList = [
+//     FaqItem(
+//       question: "Who will pick up the food?",
+//       answer: "Verified volunteers or nearby receivers will pick up the food directly from the donor's location.",
+//     ),
+//     FaqItem(
+//       question: "Is there any cost for the Receiver?",
+//       answer: "No, the food is completely free.",
+//     ),
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final auth = context.watch<GenericAuthProvider>();
+//     final receiver = context.watch<ReceiverProvider>();
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+//
+//     final userData = auth.userData ?? {};
+//     final profile = userData['profile'] as Map<String, dynamic>? ?? {};
+//
+//     final displayName = profile['contactPerson'] ?? profile['businessOrFullName'] ?? "User";
+//     final int points = profile['points'] ?? 0;
+//     final int totalReceives = profile['totalReceives'] ?? 0;
+//
+//     return Scaffold(
+//       // ডার্ক মোডে রিচ ব্ল্যাক এবং লাইট মোডে হালকা গ্রে ব্যাকগ্রাউন্ড
+//       backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+//       body: SafeArea(
+//         child: RefreshIndicator(
+//           color: AppColor.green,
+//           onRefresh: () async {
+//             await auth.fetchUserData();
+//             receiver.fetchAllPosts();
+//           },
+//           child: SingleChildScrollView(
+//             physics: const BouncingScrollPhysics(),
+//             child: BaseScreen(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   // --- হেডার সেকশন ---
+//                   HeaderSection(
+//                     name: displayName,
+//                     role: (auth.selectedRole ?? "Receiver").toUpperCase(),
+//                     notificationCount: auth.notificationCount,
+//                     noticicationOnActionTap: () {
+//                       auth.resetNotificationCount();
+//                       Navigator.pushNamed(context, ReceiverNotificationScreen.routeName);
+//                     },
+//                   ),
+//                   const SizedBox(height: 20),
+//
+//                   // --- ইনফো কার্ড সেকশন (Night Mode Adjusted) ---
+//                   InfoCardsSection(
+//                     title1: "Pending",
+//                     value1: receiver.pendingPosts.length,
+//                     // ডার্ক মোডে অরেঞ্জ কালারটি একটু সফট করা হয়েছে
+//                     color1: isDark ? Colors.orange.shade700.withOpacity(0.8) : Colors.orange.shade400,
+//
+//                     title2: "Received",
+//                     value2: totalReceives,
+//                     color2: AppColor.green, // আপনার সিগনেচার গ্রিন
+//
+//                     title3: "Points",
+//                     value3: points,
+//                     // ডার্ক মোডে ব্লু কালারটি অ্যাডজাস্ট করা হয়েছে
+//                     color3: isDark ? Colors.blue.shade700.withOpacity(0.8) : Colors.blue.shade400,
+//                   ),
+//
+//                   const SizedBox(height: 30),
+//
+//                   /// --- ট্যাব সেকশন (Activities) ---
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
+//                     child: Container(
+//                       decoration: BoxDecoration(
+//                         color: isDark ? const Color(0xFF1E1E1E) : Colors.transparent,
+//                         borderRadius: BorderRadius.circular(15),
+//                       ),
+//                       child: const ReceiverTabSection(),
+//                     ),
+//                   ),
+//
+//                   const SizedBox(height: 25),
+//
+//                   /// --- রিসেন্ট পোস্ট সেকশন ---
+//                   const ReceiverRecentSection(),
+//
+//                   const SizedBox(height: 10),
+//
+//                   /// --- FAQ SECTION ---
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           "Help & Guidelines",
+//                           style: TextStyle(
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.bold,
+//                             color: isDark ? Colors.white : Colors.black87,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 15),
+//                         FaqSection(faqs: faqList),
+//                       ],
+//                     ),
+//                   ),
+//
+//                   const SizedBox(height: 100), // নিচের কার্ভড নেভিগেশন বারের জন্য সেফ স্পেস
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -618,24 +918,22 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 🔹 দুটি প্রোভাইডারকেই লিসেন করা হচ্ছে
     final auth = context.watch<GenericAuthProvider>();
     final receiver = context.watch<ReceiverProvider>();
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // ১. ডাটাবেজ স্ট্রাকচার অনুযায়ী প্রোফাইল ডাটা বের করা
     final userData = auth.userData ?? {};
     final profile = userData['profile'] as Map<String, dynamic>? ?? {};
 
-    // ২. ফিল্ড নেম ম্যাপিং (আপনার দেয়া ডাটাবেজ অনুযায়ী)
     final displayName = profile['contactPerson'] ?? profile['businessOrFullName'] ?? "User";
-    final int points = profile['points'] ?? 0; // Firestore 'points' field
-    final int totalReceives = profile['totalReceives'] ?? 0; // Firestore 'totalReceives' field
+    final int points = profile['points'] ?? 0;
+    final int totalReceives = profile['totalReceives'] ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColor.green,
+          color: AppColor.primary,
           onRefresh: () async {
             await auth.fetchUserData();
             receiver.fetchAllPosts();
@@ -646,7 +944,7 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- হেডার সেকশন ---
+                  // --- Header Section ---
                   HeaderSection(
                     name: displayName,
                     role: (auth.selectedRole ?? "Receiver").toUpperCase(),
@@ -658,41 +956,73 @@ class _ReceiverHomeScreenState extends State<ReceiverHomeScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // --- ইনফো কার্ড সেকশন (রিয়েল-টাইম প্রোফাইল ডাটা) ---
+                  // --- Info Cards Section (Matching Volunteer Style) ---
                   InfoCardsSection(
                     title1: "Pending",
-                    // রিসিভার প্রোভাইডার থেকে বর্তমানে কয়টি রিকোয়েস্ট পেন্ডিং তা দেখাচ্ছে
                     value1: receiver.pendingPosts.length,
-                    color1: Colors.orange.shade400,
+                    // Soft amber for Night Mode, pastel for Light Mode
+                    color1: isDark
+                        ? const Color(0xFFFFECB3) : AppColor.soft_green,
 
                     title2: "Received",
-                    // ৩. স্ট্যাটিক ক্যালকুলেশন বাদ দিয়ে প্রোফাইল থেকে মোট রিসিভ সংখ্যা দেখাচ্ছে
                     value2: totalReceives,
-                    color2: AppColor.green,
+                    // Signature Green with Night Mode tint
+                    color2: isDark
+                        ? AppColor.green
+                        : AppColor.green,
 
                     title3: "Points",
-                    // ৪. সরাসরি ডাটাবেজের 'points' ফিল্ড থেকে ভ্যালু আসছে
                     value3: points,
-                    color3: Colors.blue.shade400,
+                    // Soft blue for Night Mode
+                    color3: isDark
+                        ? const Color(0xFFFFECB3) : AppColor.soft_green,
                   ),
 
                   const SizedBox(height: 30),
 
-                  /// --- ট্যাব সেকশন (Activities) ---
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ReceiverTabSection(),
+                  /// --- Tab Section ---
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColor.gray.withOpacity(0.1) : Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: isDark ? [] : [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: const ReceiverTabSection(),
+                    ),
                   ),
 
                   const SizedBox(height: 25),
-
-                  /// --- রিসেন্ট পোস্ট সেকশন ---
                   const ReceiverRecentSection(),
+                  const SizedBox(height: 10),
 
                   /// --- FAQ SECTION ---
-                  FaqSection(faqs: faqList),
-
-                  const SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Help & Guidelines",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColor.white : AppColor.black,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        FaqSection(faqs: faqList),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),

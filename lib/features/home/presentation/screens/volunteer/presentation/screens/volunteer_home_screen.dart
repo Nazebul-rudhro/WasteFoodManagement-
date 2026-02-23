@@ -1,9 +1,6 @@
-
-//
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
-// import '../../../../../../../app/app_theme.dart';
 // import '../../../../../../../core/constants/app_colors.dart';
 // import '../../../../../../auth/data/model/faq_item_model.dart';
 // import '../../../../../../auth/provider/generic_auth_provider.dart';
@@ -11,7 +8,6 @@
 // import '../../../../sections/faq_section.dart';
 // import '../../../../sections/header_section.dart';
 // import '../../../../sections/info_cards_section.dart';
-// import '../provider/volunteer_provider.dart';
 // import '../section/volunteer_notification_screen.dart';
 // import '../section/volunteer_tab_section.dart';
 //
@@ -34,7 +30,6 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     // ৩টি ট্যাব: Available, Ongoing, Completed
 //     _tabController = TabController(length: 3, vsync: this);
 //   }
 //
@@ -47,40 +42,29 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     final authProvider = Provider.of<GenericAuthProvider>(context);
-//     // userUid এবং অন্যান্য ডাটা সেফলি হ্যান্ডেল করা
 //     final String userUid = authProvider.user?.uid ?? "";
-//     final String userName = authProvider.userData?['profile']?['name'] ?? "Volunteer";
+//     final String userName = authProvider.userData?['profile']?['contactPerson'] ?? "Volunteer";
 //     final String userRole = authProvider.selectedRole?.toUpperCase() ?? "VOLUNTEER";
 //
-//     // স্ক্রিন হাইট ক্যালকুলেশন
 //     final double screenHeight = MediaQuery.of(context).size.height;
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       // ডার্ক মোডে থিমের ব্যাকগ্রাউন্ড অটো নিবে
+//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 //       body: SafeArea(
 //         child: BaseScreen(
-//           // SingleChildScrollView সরানো হয়েছে কারণ TabBarView এর নিজস্ব স্ক্রলিং দরকার হতে পারে
-//           // যদি BaseScreen এর ভেতর স্ক্রলিং থাকে তবে নিচের Column টি ঠিকঠাক কাজ করবে
 //           child: CustomScrollView(
+//             physics: const BouncingScrollPhysics(),
 //             slivers: [
 //               SliverToBoxAdapter(
 //                 child: Column(
 //                   children: [
 //                     // ১. হেডার সেকশন
-//                     // HeaderSection(
-//                     //   name: userName,
-//                     //   role: userRole,
-//                     //   notificationCount: 1,
-//                     //   noticicationOnActionTap: () {
-//                     //     Navigator.pushNamed(context, VolunteerNotificationSection.routeName);
-//                     //   },
-//                     // ),
-//
-//                     // HeaderSection update inside VolunteerHomeScreen
 //                     HeaderSection(
 //                       name: userName,
 //                       role: userRole,
-//                       notificationCount: authProvider.notificationCount, // Provider theke real count ashbe
+//                       notificationCount: authProvider.notificationCount,
 //                       noticicationOnActionTap: () {
 //                         authProvider.resetNotificationCount();
 //                         Navigator.pushNamed(context, VolunteerNotificationScreen.routeName);
@@ -89,54 +73,64 @@
 //                     const SizedBox(height: 20),
 //
 //                     // ২. ইনফো কার্ড সেকশন (StreamBuilder)
-//                     StreamBuilder<QuerySnapshot>(
+//                     StreamBuilder<DocumentSnapshot>(
 //                       stream: FirebaseFirestore.instance
-//                           .collection('requests')
-//                           .where('volunteerId', isEqualTo: userUid)
+//                           .collection('accounts')
+//                           .doc(userUid)
 //                           .snapshots(),
-//                       builder: (context, snapshot) {
-//                         if (snapshot.connectionState == ConnectionState.waiting) {
-//                           return const Center(child: CircularProgressIndicator());
-//                         }
+//                       builder: (context, userSnapshot) {
+//                         final userData = userSnapshot.data?.data() as Map<String, dynamic>? ?? {};
+//                         final profile = userData['profile'] as Map<String, dynamic>? ?? {};
 //
-//                         int completed = 0;
-//                         int ongoing = 0;
+//                         final int totalPoints = profile['points'] ?? 0;
+//                         final int totalTasks = profile['totalTasks'] ?? 0;
 //
-//                         if (snapshot.hasData) {
-//                           for (var doc in snapshot.data!.docs) {
-//                             String status = doc['status'] ?? "";
-//                             if (status == 'completed') completed++;
-//                             if (status == 'on_the_way') ongoing++;
-//                           }
-//                         }
+//                         return StreamBuilder<QuerySnapshot>(
+//                           stream: FirebaseFirestore.instance
+//                               .collection('requests')
+//                               .where('volunteerId', isEqualTo: userUid)
+//                               .where('deliverystatus', isEqualTo: 'ongoing')
+//                               .snapshots(),
+//                           builder: (context, requestSnapshot) {
+//                             int ongoingCount = requestSnapshot.data?.docs.length ?? 0;
 //
-//                         return InfoCardsSection(
-//                           title1: "Delivered",
-//                           value1: completed,
-//                           color1: AppColor.soft_green,
-//                           title2: "Ongoing",
-//                           value2: ongoing,
-//                           color2: AppColor.green,
-//                           title3: "Points",
-//                           value3: completed * 10,
-//                           color3: AppColor.soft_green,
+//                             return InfoCardsSection(
+//                               title1: "Delivered",
+//                               value1: totalTasks,
+//                               // ডার্ক মোডে সফট গ্রিন কালার অ্যাডজাস্টমেন্ট
+//                               color1: isDark
+//                                   ? AppColor.green.withOpacity(0.15)
+//                                   : AppColor.soft_green,
+//                               title2: "Ongoing",
+//                               value2: ongoingCount,
+//                               color2: AppColor.green,
+//                               title3: "Points",
+//                               value3: totalPoints,
+//                               color3: isDark
+//                                   ? AppColor.green.withOpacity(0.15)
+//                                   : AppColor.soft_green,
+//                             );
+//                           },
 //                         );
 //                       },
 //                     ),
-//                     const SizedBox(height: 20),
+//                     const SizedBox(height: 10),
 //
-//                     // ৩. ট্যাব সেকশন
-//                     // মনে রাখবেন: TabBarView কে একটি নির্দিষ্ট Height দিতেই হবে
+//                     // ৩. ট্যাব সেকশন (ট্যাব বার ও লিস্ট ভিউ)
 //                     SizedBox(
-//                       height: screenHeight * 0.6, // স্ক্রিনের ৬০% জায়গা ট্যাবের জন্য
+//                       height: screenHeight * 0.75, // হাইট সামান্য বাড়ানো হয়েছে
 //                       child: VolunteerTabSection(tabController: _tabController),
 //                     ),
 //
-//                     const SizedBox(height: 20),
+//                     const SizedBox(height: 10),
 //
 //                     // ৪. এফএকিউ সেকশন
-//                     FaqSection(faqs: faqList),
-//                     const SizedBox(height: 30),
+//                     Padding(
+//                       padding: const EdgeInsets.symmetric(horizontal: 4),
+//                       child: FaqSection(faqs: faqList),
+//                     ),
+//
+//                     const SizedBox(height: 110), // কার্ভ নেভিগেশন বারের জন্য সেফ স্পেস
 //                   ],
 //                 ),
 //               ),
@@ -149,10 +143,10 @@
 // }
 
 
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../../../../app/app_theme.dart';
 import '../../../../../../../core/constants/app_colors.dart';
 import '../../../../../../auth/data/model/faq_item_model.dart';
 import '../../../../../../auth/provider/generic_auth_provider.dart';
@@ -160,7 +154,6 @@ import '../../../../sections/base_screen.dart';
 import '../../../../sections/faq_section.dart';
 import '../../../../sections/header_section.dart';
 import '../../../../sections/info_cards_section.dart';
-import '../provider/volunteer_provider.dart';
 import '../section/volunteer_notification_screen.dart';
 import '../section/volunteer_tab_section.dart';
 
@@ -200,12 +193,14 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> with TickerPr
     final String userRole = authProvider.selectedRole?.toUpperCase() ?? "VOLUNTEER";
 
     final double screenHeight = MediaQuery.of(context).size.height;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: BaseScreen(
           child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
                 child: Column(
@@ -222,21 +217,19 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> with TickerPr
                     ),
                     const SizedBox(height: 20),
 
-                    // ২. ইনফো কার্ড সেকশন (Dynamic Stream theke Points o Tasks asbe)
+                    // ২. ইনফো কার্ড সেকশন
                     StreamBuilder<DocumentSnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('accounts')
                           .doc(userUid)
                           .snapshots(),
                       builder: (context, userSnapshot) {
-                        // User Profile theke data fetch
                         final userData = userSnapshot.data?.data() as Map<String, dynamic>? ?? {};
                         final profile = userData['profile'] as Map<String, dynamic>? ?? {};
 
                         final int totalPoints = profile['points'] ?? 0;
                         final int totalTasks = profile['totalTasks'] ?? 0;
 
-                        // Ongoing tasks-er jonno onno stream (optional check)
                         return StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('requests')
@@ -248,14 +241,17 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> with TickerPr
 
                             return InfoCardsSection(
                               title1: "Delivered",
-                              value1: totalTasks, // User profile -> totalTasks theke asche
-                              color1: AppColor.soft_green,
+                              value1: totalTasks,
+                              // ডার্ক মোডে সলিড ডার্ক সারফেস এবং লাইট মোডে সফট গ্রিন
+                              color1: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
+
                               title2: "Ongoing",
-                              value2: ongoingCount, // Database-er filter theke asche
-                              color2: AppColor.green,
+                              value2: ongoingCount,
+                              color2: AppColor.green, // মেইন গ্রিন কালার
+
                               title3: "Points",
-                              value3: totalPoints, // User profile -> points theke asche
-                              color3: AppColor.soft_green,
+                              value3: totalPoints,
+                              color3: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
                             );
                           },
                         );
@@ -264,16 +260,42 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> with TickerPr
                     const SizedBox(height: 20),
 
                     // ৩. ট্যাব সেকশন
-                    SizedBox(
-                      height: screenHeight * 0.7, // Height thoda barano hoyeche scroll safety-r jonno
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      height: screenHeight * 0.50,
+                      decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isDark ? Colors.white10 : Colors.transparent,
+                          )
+                      ),
                       child: VolunteerTabSection(tabController: _tabController),
                     ),
 
                     const SizedBox(height: 20),
 
                     // ৪. এফএকিউ সেকশন
-                    FaqSection(faqs: faqList),
-                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Support FAQ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          FaqSection(faqs: faqList),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 120),
                   ],
                 ),
               ),

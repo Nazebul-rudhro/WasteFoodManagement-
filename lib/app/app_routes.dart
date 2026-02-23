@@ -288,7 +288,6 @@ import 'package:waste_food_management/features/auth/presentation/screens/forgot_
 import 'package:waste_food_management/features/auth/presentation/screens/generic_information_form_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/login_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/otp_screen.dart';
-import 'package:waste_food_management/features/auth/presentation/screens/otp_success.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/signup_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen2.dart';
@@ -357,8 +356,8 @@ class AppRoutes {
     LoginScreen.routeName: () => const LoginScreen(),
     SignUpScreen.routeName: () => SignUpScreen(),
     ForgotPasswordScreen.routeName: () => ForgotPasswordScreen(),
-    OTPScreen.routeName: () => OTPScreen(),
-    OTPSuccess.routeName: () => OTPSuccess(),
+    // OTPScreen.routeName: () => OTPScreen(),
+    // OTPSuccess.routeName: () => OTPSuccess(),
 
     // Donor Screens
     DonorScreen.routeName: () => DonorScreen(),

@@ -1,6 +1,6 @@
-//
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
+// import 'package:intl/intl.dart';
 // import '../../../../../../../../core/constants/app_colors.dart';
 // import '../../provider/receiver_provider.dart';
 //
@@ -15,6 +15,7 @@
 //           return const Center(child: CircularProgressIndicator(color: AppColor.green));
 //         }
 //
+//         // provider theke sorting kora list-ti eikhane ashbe
 //         final requests = provider.approvedPosts;
 //
 //         if (requests.isEmpty) {
@@ -27,9 +28,8 @@
 //           itemBuilder: (context, index) {
 //             final post = requests[index];
 //
-//             // 🔹 সরাসরি requests কালেকশনের ডাটা
-//             final String donorStatus = post.status.toLowerCase(); // delivered, approved
-//             final String dStatus = post.deliveryStatus.toLowerCase(); // pending, ongoing, completed
+//             final String donorStatus = post.status.toLowerCase();
+//             final String dStatus = post.deliveryStatus.toLowerCase();
 //
 //             return Container(
 //               margin: const EdgeInsets.only(bottom: 15),
@@ -37,7 +37,6 @@
 //                 color: Colors.white,
 //                 borderRadius: BorderRadius.circular(16),
 //                 boxShadow: [
-//                   Shadows.softShadow, // আপনার কাস্টম শ্যাডো থাকলে সেটি দিন বা নিচেরটা রাখুন
 //                   BoxShadow(
 //                     color: Colors.black.withOpacity(0.04),
 //                     blurRadius: 10,
@@ -67,24 +66,12 @@
 //                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
 //                                 ),
 //                               ),
-//                               // ✅ Donor Status ব্যাজ (সরাসরি status ফিল্ডের ডাটা)
-//                               Row(
-//                                 children: [
-//                                   const Text(
-//                                     "Donor Status: ",
-//                                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey),
-//                                   ),
-//                                   _buildBadge(donorStatus.toUpperCase(), _getStatusColor(donorStatus)),
-//                                 ],
-//                               ),
+//                               _buildBadge(donorStatus.toUpperCase(), _getStatusColor(donorStatus)),
 //                             ],
 //                           ),
 //                           const SizedBox(height: 10),
 //
-//                           // 🔹 Donor Info
-//                           _infoRow(Icons.person_outline, "Donor ID: ${post.donorId.substring(0, 5)}..."),
-//
-//                           // 🔹 Delivery Status Row (Pending এবং Delivered কালার হ্যান্ডেল করা হয়েছে)
+//                           // ১. ডেলিভারি স্ট্যাটাস (Sorting validation er jonno priority dewa hoyeche)
 //                           _infoRow(
 //                             _getStatusIcon(dStatus),
 //                             "Delivery: ${dStatus.toUpperCase()}",
@@ -93,6 +80,9 @@
 //                           ),
 //
 //                           const SizedBox(height: 5),
+//
+//                           // ২. ডোনার আইডি এবং অন্যান্য ডিটেইলস
+//                           _infoRow(Icons.person_outline, "Donor ID: ${post.donorId.substring(0, 5).toUpperCase()}..."),
 //                           _infoRow(Icons.access_time_rounded, "Pickup: ${post.pickupTime}"),
 //                           _infoRow(Icons.location_on_outlined, post.pickupAddress),
 //                         ],
@@ -114,11 +104,11 @@
 //     switch (status) {
 //       case 'delivered':
 //       case 'completed':
-//         return Colors.green; // ডেলিভারি হলে সবুজ
+//         return Colors.green;
 //       case 'ongoing':
-//         return Colors.orange; // রাস্তায় থাকলে কমলা
+//         return Colors.orange;
 //       case 'pending':
-//         return Colors.blueGrey; // পেন্ডিং থাকলে নীলচে ধূসর (যাতে আলাদা বোঝা যায়)
+//         return Colors.blueGrey;
 //       case 'approved':
 //         return Colors.blue;
 //       default:
@@ -129,7 +119,7 @@
 //   IconData _getStatusIcon(String status) {
 //     if (status == "completed" || status == "delivered") return Icons.check_circle_outline;
 //     if (status == "ongoing") return Icons.motorcycle;
-//     return Icons.timer_outlined; // Pending এর জন্য টাইমার আইকন
+//     return Icons.timer_outlined;
 //   }
 //
 //   Widget _buildBadge(String text, Color color) {
@@ -210,21 +200,10 @@
 //     );
 //   }
 // }
-//
-// // শ্যাডো এর জন্য একটি সিম্পল ক্লাস (যদি না থাকে)
-// class Shadows {
-//   static BoxShadow softShadow = BoxShadow(
-//     color: Colors.black.withOpacity(0.04),
-//     blurRadius: 10,
-//     offset: const Offset(0, 4),
-//   );
-// }
-
 
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../../../../../../../core/constants/app_colors.dart';
 import '../../provider/receiver_provider.dart';
 
@@ -233,34 +212,37 @@ class ApprovedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Consumer<ReceiverProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator(color: AppColor.green));
+          return const Center(child: CircularProgressIndicator(color: AppColor.primary));
         }
 
-        // provider theke sorting kora list-ti eikhane ashbe
         final requests = provider.approvedPosts;
 
         if (requests.isEmpty) {
-          return _buildEmptyState("No approved donations yet");
+          return _buildEmptyState(context, "No approved donations yet");
         }
 
         return ListView.builder(
           padding: const EdgeInsets.all(12),
+          physics: const BouncingScrollPhysics(),
           itemCount: requests.length,
           itemBuilder: (context, index) {
             final post = requests[index];
-
             final String donorStatus = post.status.toLowerCase();
             final String dStatus = post.deliveryStatus.toLowerCase();
 
             return Container(
               margin: const EdgeInsets.only(bottom: 15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // Adaptive background for Night Mode
+                color: isDark ? AppColor.gray.withOpacity(0.1) : AppColor.white,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
+                border: isDark ? Border.all(color: AppColor.gray.withOpacity(0.2), width: 0.5) : null,
+                boxShadow: isDark ? [] : [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.04),
                     blurRadius: 10,
@@ -273,7 +255,7 @@ class ApprovedTab extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildLeadingImage(post.imageUrls, dStatus),
+                    _buildLeadingImage(post.imageUrls, dStatus, isDark),
                     const SizedBox(width: 15),
                     Expanded(
                       child: Column(
@@ -287,7 +269,11 @@ class ApprovedTab extends StatelessWidget {
                                   post.foodName,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: isDark ? AppColor.white : AppColor.black,
+                                  ),
                                 ),
                               ),
                               _buildBadge(donorStatus.toUpperCase(), _getStatusColor(donorStatus)),
@@ -295,8 +281,9 @@ class ApprovedTab extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
 
-                          // ১. ডেলিভারি স্ট্যাটাস (Sorting validation er jonno priority dewa hoyeche)
+                          // 1. Delivery Status with Dynamic Colors
                           _infoRow(
+                            context,
                             _getStatusIcon(dStatus),
                             "Delivery: ${dStatus.toUpperCase()}",
                             color: _getStatusColor(dStatus),
@@ -305,10 +292,10 @@ class ApprovedTab extends StatelessWidget {
 
                           const SizedBox(height: 5),
 
-                          // ২. ডোনার আইডি এবং অন্যান্য ডিটেইলস
-                          _infoRow(Icons.person_outline, "Donor ID: ${post.donorId.substring(0, 5).toUpperCase()}..."),
-                          _infoRow(Icons.access_time_rounded, "Pickup: ${post.pickupTime}"),
-                          _infoRow(Icons.location_on_outlined, post.pickupAddress),
+                          // 2. Donor ID & Details
+                          _infoRow(context, Icons.person_outline, "Donor ID: ${post.donorId.substring(0, 5).toUpperCase()}..."),
+                          _infoRow(context, Icons.access_time_rounded, "Pickup: ${post.pickupTime}"),
+                          _infoRow(context, Icons.location_on_outlined, post.pickupAddress),
                         ],
                       ),
                     ),
@@ -336,7 +323,7 @@ class ApprovedTab extends StatelessWidget {
       case 'approved':
         return Colors.blue;
       default:
-        return AppColor.green;
+        return AppColor.primary;
     }
   }
 
@@ -360,12 +347,13 @@ class ApprovedTab extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(IconData icon, String text, {Color? color, bool isBold = false}) {
+  Widget _infoRow(BuildContext context, IconData icon, String text, {Color? color, bool isBold = false}) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: Row(
         children: [
-          Icon(icon, size: 14, color: color ?? AppColor.green.withOpacity(0.7)),
+          Icon(icon, size: 14, color: color ?? AppColor.primary.withOpacity(0.7)),
           const SizedBox(width: 6),
           Expanded(
             child: Text(
@@ -374,7 +362,7 @@ class ApprovedTab extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 11,
-                color: color ?? Colors.grey.shade600,
+                color: color ?? (isDark ? AppColor.white.withOpacity(0.6) : Colors.grey.shade600),
                 fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -384,25 +372,26 @@ class ApprovedTab extends StatelessWidget {
     );
   }
 
-  Widget _buildLeadingImage(List<String> urls, String status) {
+  Widget _buildLeadingImage(List<String> urls, String status, bool isDark) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Stack(
         children: [
           Container(
-            width: 80, height: 80, color: Colors.grey.shade100,
+            width: 80, height: 80,
+            color: isDark ? AppColor.gray.withOpacity(0.2) : AppColor.lightGray,
             child: urls.isNotEmpty
                 ? Image.network(
               urls.first,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, color: Colors.grey),
+              errorBuilder: (_, __, ___) => Icon(Icons.fastfood, color: isDark ? AppColor.white.withOpacity(0.2) : Colors.grey),
             )
-                : const Icon(Icons.fastfood, color: Colors.grey),
+                : Icon(Icons.fastfood, color: isDark ? AppColor.white.withOpacity(0.2) : Colors.grey),
           ),
           if (status == "ongoing")
             Positioned.fill(
               child: Container(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.3),
                 child: const Icon(Icons.delivery_dining, color: Colors.white, size: 25),
               ),
             ),
@@ -411,14 +400,25 @@ class ApprovedTab extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(String msg) {
+  Widget _buildEmptyState(BuildContext context, String msg) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.assignment_turned_in_outlined, size: 50, color: Colors.grey.shade300),
+          Icon(
+              Icons.assignment_turned_in_outlined,
+              size: 50,
+              color: isDark ? AppColor.gray.withOpacity(0.5) : Colors.grey.shade300
+          ),
           const SizedBox(height: 10),
-          Text(msg, style: TextStyle(color: Colors.grey.shade500, fontSize: 14)),
+          Text(
+              msg,
+              style: TextStyle(
+                  color: isDark ? AppColor.white.withOpacity(0.5) : Colors.grey.shade500,
+                  fontSize: 14
+              )
+          ),
         ],
       ),
     );

@@ -1,24 +1,152 @@
+<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    package="com.example.waste_food_management">-->
+
+<!--    &lt;!&ndash; Internet &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.INTERNET"/>-->
+
+<!--    &lt;!&ndash; Storage & Image access &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"-->
+<!--        android:maxSdkVersion="32"/>-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>-->
+
+<!--    &lt;!&ndash; Camera &ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.CAMERA"/>-->
+
+<!--    <application-->
+<!--        android:label="waste_food_management"-->
+<!--        android:icon="@mipmap/ic_launcher"-->
+<!--        android:usesCleartextTraffic="true">-->
+
+<!--        &lt;!&ndash; Google Maps API Key &ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="YOUR_REAL_GOOGLE_MAPS_API_KEY"/>-->
+
+<!--        <activity-->
+<!--            android:name=".MainActivity"-->
+<!--            android:exported="true"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:theme="@style/LaunchTheme"-->
+<!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
+<!--            android:hardwareAccelerated="true"-->
+<!--            android:windowSoftInputMode="adjustResize">-->
+
+<!--            <meta-data-->
+<!--                android:name="io.flutter.embedding.android.NormalTheme"-->
+<!--                android:resource="@style/NormalTheme"/>-->
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <meta-data-->
+<!--            android:name="flutterEmbedding"-->
+<!--            android:value="2"/>-->
+<!--    </application>-->
+
+<!--</manifest>-->
+
+
+
+<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    package="com.example.waste_food_management">-->
+
+<!--    <uses-permission android:name="android.permission.INTERNET"/>-->
+
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"-->
+<!--        android:maxSdkVersion="32"/>-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>-->
+
+<!--    <uses-permission android:name="android.permission.CAMERA"/>-->
+
+<!--    <queries>-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.VIEW" />-->
+<!--            <data android:scheme="mailto" />-->
+<!--        </intent>-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.DIAL" />-->
+<!--        </intent>-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.VIEW" />-->
+<!--            <data android:scheme="https" />-->
+<!--        </intent>-->
+<!--    </queries>-->
+
+<!--    <application-->
+<!--        android:label="waste_food_management"-->
+<!--        android:icon="@mipmap/ic_launcher"-->
+<!--        android:usesCleartextTraffic="true">-->
+
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="YOUR_REAL_GOOGLE_MAPS_API_KEY"/>-->
+
+<!--        <activity-->
+<!--            android:name=".MainActivity"-->
+<!--            android:exported="true"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:theme="@style/LaunchTheme"-->
+<!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
+<!--            android:hardwareAccelerated="true"-->
+<!--            android:windowSoftInputMode="adjustResize">-->
+
+<!--            <meta-data-->
+<!--                android:name="io.flutter.embedding.android.NormalTheme"-->
+<!--                android:resource="@style/NormalTheme"/>-->
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+<!--        <meta-data-->
+<!--            android:name="flutterEmbedding"-->
+<!--            android:value="2"/>-->
+<!--    </application>-->
+
+<!--</manifest>-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.waste_food_management">
 
-    <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- Storage & Image access -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
-    <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA"/>
+
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="mailto" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <application
         android:label="waste_food_management"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
 
-        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_REAL_GOOGLE_MAPS_API_KEY"/>

@@ -1,148 +1,5 @@
-// import 'package:flutter/material.dart';
-//
-// class UserInfoDialog extends StatelessWidget {
-//   final Map<String, dynamic> data;
-//
-//   const UserInfoDialog({super.key, required this.data});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//       titlePadding: EdgeInsets.zero,
-//       title: Container(
-//         padding: const EdgeInsets.all(16),
-//         decoration: const BoxDecoration(
-//           color: Colors.green,
-//           borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(20),
-//             topRight: Radius.circular(20),
-//           ),
-//         ),
-//         child: const Row(
-//           children: [
-//             Icon(Icons.person_pin, color: Colors.white, size: 28),
-//             SizedBox(width: 10),
-//             Text("Personal Info", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-//           ],
-//         ),
-//       ),
-//       content: SingleChildScrollView(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             _infoTile(Icons.user_Type, "User Type", data['userType']),
-//             _infoTile(Icons.person, "Full Name", data['contactPerson']),
-//             _infoTile(Icons.email, "Email Address", data['email']),
-//             _infoTile(Icons.phone, "Phone Number", data['phone']),
-//             _infoTile(Icons.location_on, "Address", data['address']),
-//             _infoTile(Icons.post_code, "postCode", data['postCode']),
-//             _infoTile(Icons.location_on, "Address", data['address']),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.pop(context),
-//           child: const Text("CLOSE", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _infoTile(IconData icon, String label, dynamic value) {
-//     return ListTile(
-//       leading: Icon(icon, color: Colors.green),
-//       contentPadding: EdgeInsets.zero,
-//       title: Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-//       subtitle: Text(
-//         value?.toString() ?? "Not Provided",
-//         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
-//       ),
-//     );
-//   }
-// }
-
-//
-//
-// import 'package:flutter/material.dart';
-//
-// class UserInfoDialog extends StatelessWidget {
-//   final Map<String, dynamic> data;
-//
-//   const UserInfoDialog({super.key, required this.data});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // Firestore structure onujayi 'profile' map-ti ber kore neya
-//     final profile = data['profile'] as Map<String, dynamic>? ?? {};
-//
-//     return AlertDialog(
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//       titlePadding: EdgeInsets.zero,
-//       title: Container(
-//         padding: const EdgeInsets.all(16),
-//         decoration: const BoxDecoration(
-//           color: Colors.green,
-//           borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(20),
-//             topRight: Radius.circular(20),
-//           ),
-//         ),
-//         child: const Row(
-//           children: [
-//             Icon(Icons.badge_outlined, color: Colors.white, size: 28),
-//             SizedBox(width: 10),
-//             Text("Personal Info", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-//           ],
-//         ),
-//       ),
-//       content: SizedBox(
-//         width: double.maxFinite,
-//         child: SingleChildScrollView(
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               _infoTile(Icons.category_outlined, "User Type", profile['role']),
-//               _infoTile(Icons.business_outlined, "Business Name", profile['businessOrFullName']),
-//               _infoTile(Icons.person_outline, "Name", profile['contactPerson'].toString().toUpperCase()),
-//               _infoTile(Icons.email_outlined, "Email Address", profile['email']),
-//               _infoTile(Icons.phone_android_outlined, "Phone Number", profile['phone']),
-//               _infoTile(Icons.location_city_outlined, "City", profile['city']),
-//               _infoTile(Icons.map_outlined, "Full Address", profile['address']),
-//               _infoTile(Icons.pin_drop_outlined, "Post Code", profile['postCode']),
-//             ],
-//           ),
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.pop(context),
-//           child: const Text("CLOSE", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _infoTile(IconData icon, String label, dynamic value) {
-//     return ListTile(
-//       leading: CircleAvatar(
-//         backgroundColor: Colors.green.withOpacity(0.1),
-//         child: Icon(icon, color: Colors.green, size: 20),
-//       ),
-//       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-//       title: Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey, letterSpacing: 0.5)),
-//       subtitle: Text(
-//         value?.toString() ?? "Not Provided",
-//         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
-//       ),
-//     );
-//   }
-// }
-
-
-
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart'; // আপনার প্রোজেক্টের পাথ অনুযায়ী ইমপোর্ট করুন
 
 class UserInfoDialog extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -158,16 +15,20 @@ class UserInfoDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Firestore structure onujayi 'profile' map-ti ber kore neya
+    // ডার্ক মোড চেক
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Firestore structure অনুযায়ী 'profile' map বের করা
     final profile = data['profile'] as Map<String, dynamic>? ?? {};
 
     return AlertDialog(
+      backgroundColor: isDark ? const Color(0xFF1E1E1E) : AppColor.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       titlePadding: EdgeInsets.zero,
       title: Container(
         padding: const EdgeInsets.all(16),
         decoration: const BoxDecoration(
-          color: Colors.green,
+          color: AppColor.green, // আপনার Emerald Green
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -175,9 +36,12 @@ class UserInfoDialog extends StatelessWidget {
         ),
         child: const Row(
           children: [
-            Icon(Icons.badge_outlined, color: Colors.white, size: 28),
+            Icon(Icons.badge_outlined, color: AppColor.white, size: 28),
             SizedBox(width: 10),
-            Text("Personal Info", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Text(
+                "Personal Info",
+                style: TextStyle(color: AppColor.white, fontWeight: FontWeight.bold)
+            ),
           ],
         ),
       ),
@@ -187,19 +51,23 @@ class UserInfoDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 🔹 Role: Sudu prothom letter boro hobe (e.g. Donor)
-              _infoTile(Icons.category_outlined, "User Role", _capitalizeFirstLetter(profile['role'])),
-
-              // _infoTile(Icons.business_outlined, "Business Name", profile['businessOrFullName']),
-
-              // 🔹 Name: Puru-tai uppercase thakbe (tumi age jemon cheyecho)
-              _infoTile(Icons.person_outline, "Name", profile['contactPerson']?.toString().toUpperCase()),
-
-              _infoTile(Icons.email_outlined, "Email Address", profile['email']),
-              _infoTile(Icons.phone_android_outlined, "Phone Number", profile['phone']),
-              _infoTile(Icons.location_city_outlined, "City", profile['city']),
-              _infoTile(Icons.map_outlined, "Full Address", profile['address']),
-              _infoTile(Icons.pin_drop_outlined, "Post Code", profile['postCode']),
+              _infoTile(
+                  context,
+                  Icons.category_outlined,
+                  "User Role",
+                  _capitalizeFirstLetter(profile['role'])
+              ),
+              _infoTile(
+                  context,
+                  Icons.person_outline,
+                  "Name",
+                  profile['contactPerson']?.toString().toUpperCase()
+              ),
+              _infoTile(context, Icons.email_outlined, "Email Address", profile['email']),
+              _infoTile(context, Icons.phone_android_outlined, "Phone Number", profile['phone']),
+              _infoTile(context, Icons.location_city_outlined, "City", profile['city']),
+              _infoTile(context, Icons.map_outlined, "Full Address", profile['address']),
+              _infoTile(context, Icons.pin_drop_outlined, "Post Code", profile['postCode']),
             ],
           ),
         ),
@@ -207,23 +75,39 @@ class UserInfoDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("CLOSE", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+          child: const Text(
+              "CLOSE",
+              style: TextStyle(color: AppColor.green, fontWeight: FontWeight.bold)
+          ),
         ),
       ],
     );
   }
 
-  Widget _infoTile(IconData icon, String label, dynamic value) {
+  Widget _infoTile(BuildContext context, IconData icon, String label, dynamic value) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: Colors.green.withOpacity(0.1),
-        child: Icon(icon, color: Colors.green, size: 20),
+        backgroundColor: AppColor.green.withOpacity(0.1),
+        child: Icon(icon, color: AppColor.green, size: 20),
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-      title: Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey, letterSpacing: 0.5)),
+      title: Text(
+          label,
+          style: TextStyle(
+              fontSize: 11,
+              color: isDark ? AppColor.mediumtgray : AppColor.gray,
+              letterSpacing: 0.5
+          )
+      ),
       subtitle: Text(
         value?.toString() ?? "Not Provided",
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+        style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: isDark ? AppColor.white : AppColor.black
+        ),
       ),
     );
   }
