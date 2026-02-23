@@ -145,14 +145,14 @@ class GetInformationForm extends StatelessWidget {
         const SizedBox(height: 12),
 
         // 🔹 Pin Location Button
-        TextButton(
-          onPressed: onPinLocation,
-          child: const Text(
-            "Pin Location by map",
-            style: TextStyle(color: Colors.blueAccent),
-          ),
-        ),
-        const SizedBox(height: 20),
+        // TextButton(
+        //   onPressed: onPinLocation,
+        //   child: const Text(
+        //     "Pin Location by map",
+        //     style: TextStyle(color: Colors.blueAccent),
+        //   ),
+        // ),
+        // const SizedBox(height: 20),
 
         // 🔹 Submit Button
         SizedBox(

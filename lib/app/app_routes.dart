@@ -287,7 +287,6 @@ import 'package:flutter/material.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/forgot_password.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/generic_information_form_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/login_screen.dart';
-import 'package:waste_food_management/features/auth/presentation/screens/otp_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/signup_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen.dart';
 import 'package:waste_food_management/features/auth/presentation/screens/splash_screen2.dart';

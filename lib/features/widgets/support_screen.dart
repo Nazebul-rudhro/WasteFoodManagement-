@@ -11,7 +11,7 @@ class SupportScreen extends StatelessWidget {
 
   // 1. WhatsApp Function (Universal Link Fix)
   Future<void> _openWhatsApp() async {
-    const String phone = "8801580339094";
+    const String phone = "+8801580339094";
     const String message = "Hello, I need some help regarding Waste Food Management App.";
     final Uri uri = Uri.parse("https://wa.me/$phone?text=${Uri.encodeComponent(message)}");
 

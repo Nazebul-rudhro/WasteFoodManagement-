@@ -1,3 +1,6 @@
+//
+//
+//
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import 'package:waste_food_management/app/app_routes.dart';
@@ -13,16 +16,14 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     final provider = context.watch<ReceiverProvider>();
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //
-//     // 🔹 এক্সপায়ারি টাইম ফিল্টারিং লজিক
 //     final now = DateTime.now();
 //
 //     final recentPosts = provider.availablePostsForMe.where((post) {
-//       // ১. যদি পোস্টে expiryDate থাকে, তবে চেক করবে সেটা বর্তমান সময়ের পরের কি না
 //       if (post.expiryDate != null) {
 //         return post.expiryDate!.isAfter(now);
 //       }
-//       // ২. যদি expiryDate না থাকে, তবে বাই-ডিফল্ট শো করবে (অথবা আপনার লজিক অনুযায়ী ফলস দিতে পারেন)
 //       return true;
 //     }).take(4).toList();
 //
@@ -36,13 +37,23 @@
 //         Row(
 //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //           children: [
-//             Text("Recent Donations", style: AppData.heading2),
+//             Text(
+//                 "Recent Donations",
+//                 style: AppData.heading2.copyWith(
+//                     color: isDark ? AppColor.white : AppColor.black
+//                 )
+//             ),
 //             TextButton(
 //               onPressed: () {
 //                 Navigator.push(context, AppRoutes.smooth(const ReceiverAllPost()));
 //               },
-//               child: Text("See All",
-//                   style: AppData.heading2.copyWith(color: AppColor.green, fontSize: 14)),
+//               child: Text(
+//                   "See All",
+//                   style: AppData.heading2.copyWith(
+//                       color: AppColor.green,
+//                       fontSize: 14
+//                   )
+//               ),
 //             ),
 //           ],
 //         ),
@@ -55,7 +66,7 @@
 //             crossAxisCount: 2,
 //             mainAxisSpacing: 10,
 //             crossAxisSpacing: 10,
-//             childAspectRatio: 0.68, // 🔹 হাইট একটু বাড়ানো হয়েছে যাতে সব টেক্সট ধরে
+//             childAspectRatio: 0.68,
 //           ),
 //           itemBuilder: (context, index) {
 //             final post = recentPosts[index];
@@ -69,12 +80,15 @@
 //
 //   Widget _buildPostCard(BuildContext context, PostModel post, bool isLoading) {
 //     final provider = context.read<ReceiverProvider>();
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //
 //     return Container(
 //       decoration: BoxDecoration(
-//         color: Colors.white,
+//         // Adaptive background color
+//         color: isDark ? AppColor.gray.withOpacity(0.1) : AppColor.white,
 //         borderRadius: BorderRadius.circular(15),
-//         boxShadow: [
+//         border: isDark ? Border.all(color: AppColor.gray.withOpacity(0.2), width: 0.5) : null,
+//         boxShadow: isDark ? [] : [
 //           BoxShadow(
 //               color: Colors.black.withOpacity(0.04),
 //               blurRadius: 10,
@@ -85,6 +99,7 @@
 //       child: Column(
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
+//           // Image Section
 //           Expanded(
 //             flex: 4,
 //             child: Stack(
@@ -93,11 +108,21 @@
 //                   borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
 //                   child: Container(
 //                     width: double.infinity,
-//                     color: Colors.grey[100],
+//                     color: isDark ? AppColor.gray.withOpacity(0.2) : AppColor.lightGray,
 //                     child: post.imageUrls.isNotEmpty
-//                         ? Image.network(post.imageUrls.first, fit: BoxFit.cover,
-//                         errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, color: Colors.grey))
-//                         : const Icon(Icons.fastfood, color: Colors.grey, size: 30),
+//                         ? Image.network(
+//                         post.imageUrls.first,
+//                         fit: BoxFit.cover,
+//                         errorBuilder: (_, __, ___) => Icon(
+//                             Icons.fastfood,
+//                             color: isDark ? AppColor.white.withOpacity(0.3) : AppColor.gray
+//                         )
+//                     )
+//                         : Icon(
+//                         Icons.fastfood,
+//                         color: isDark ? AppColor.white.withOpacity(0.3) : AppColor.gray,
+//                         size: 30
+//                     ),
 //                   ),
 //                 ),
 //                 Positioned(
@@ -108,14 +133,17 @@
 //                         color: AppColor.green.withOpacity(0.9),
 //                         borderRadius: BorderRadius.circular(8)
 //                     ),
-//                     child: const Text("New",
-//                         style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
+//                     child: const Text(
+//                         "New",
+//                         style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)
+//                     ),
 //                   ),
 //                 ),
 //               ],
 //             ),
 //           ),
 //
+//           // Details Section
 //           Expanded(
 //             flex: 6,
 //             child: Padding(
@@ -123,17 +151,23 @@
 //               child: Column(
 //                 crossAxisAlignment: CrossAxisAlignment.start,
 //                 children: [
-//                   Text(post.foodName,
+//                   Text(
+//                       post.foodName,
 //                       maxLines: 1,
 //                       overflow: TextOverflow.ellipsis,
-//                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 13,
+//                         color: isDark ? AppColor.white : AppColor.black,
+//                       )
+//                   ),
 //                   const SizedBox(height: 6),
 //
-//                   _infoItem(Icons.group_outlined, "For: ${post.quantity} Person"),
-//                   _infoItem(Icons.timer_outlined, "Pickup: ${post.pickupTime}"),
-//                   _infoItem(Icons.location_on_outlined, post.pickupAddress),
+//                   _infoItem(context, Icons.group_outlined, "For: ${post.quantity} Person"),
+//                   _infoItem(context, Icons.timer_outlined, "Pickup: ${post.pickupTime}"),
+//                   _infoItem(context, Icons.location_on_outlined, post.pickupAddress),
 //
-//                   const Spacer(), // বাটনকে একদম নিচে পুশ করবে
+//                   const Spacer(),
 //
 //                   SizedBox(
 //                     width: double.infinity,
@@ -148,10 +182,14 @@
 //                         await provider.sendRequest(post.postId, post.donorId);
 //                       },
 //                       child: isLoading
-//                           ? const SizedBox(width: 16, height: 16,
-//                           child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-//                           : const Text("Request Now",
-//                           style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+//                           ? const SizedBox(
+//                           width: 16, height: 16,
+//                           child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+//                       )
+//                           : const Text(
+//                           "Request Now",
+//                           style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)
+//                       ),
 //                     ),
 //                   ),
 //                 ],
@@ -163,7 +201,8 @@
 //     );
 //   }
 //
-//   Widget _infoItem(IconData icon, String text) {
+//   Widget _infoItem(BuildContext context, IconData icon, String text) {
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //     return Padding(
 //       padding: const EdgeInsets.only(bottom: 4),
 //       child: Row(
@@ -171,18 +210,22 @@
 //           Icon(icon, size: 12, color: AppColor.green.withOpacity(0.7)),
 //           const SizedBox(width: 5),
 //           Expanded(
-//             child: Text(text,
+//             child: Text(
+//                 text,
 //                 maxLines: 1,
 //                 overflow: TextOverflow.ellipsis,
-//                 style: const TextStyle(fontSize: 10, color: Colors.black87)),
+//                 style: TextStyle(
+//                     fontSize: 10,
+//                     color: isDark ? AppColor.white.withOpacity(0.6) : Colors.black87
+//                 )
+//             ),
 //           ),
 //         ],
 //       ),
 //     );
 //   }
 // }
-//
-//
+
 
 
 
@@ -205,6 +248,7 @@ class ReceiverRecentSection extends StatelessWidget {
 
     final now = DateTime.now();
 
+    // এক্সপায়ার হয়নি এমন লেটেস্ট ৪টি পোস্ট নেওয়া হচ্ছে
     final recentPosts = provider.availablePostsForMe.where((post) {
       if (post.expiryDate != null) {
         return post.expiryDate!.isAfter(now);
@@ -225,7 +269,8 @@ class ReceiverRecentSection extends StatelessWidget {
             Text(
                 "Recent Donations",
                 style: AppData.heading2.copyWith(
-                    color: isDark ? AppColor.white : AppColor.black
+                    color: isDark ? AppColor.white : AppColor.black,
+                    fontSize: 18
                 )
             ),
             TextButton(
@@ -235,7 +280,7 @@ class ReceiverRecentSection extends StatelessWidget {
               child: Text(
                   "See All",
                   style: AppData.heading2.copyWith(
-                      color: AppColor.primary,
+                      color: AppColor.green,
                       fontSize: 14
                   )
               ),
@@ -249,9 +294,9 @@ class ReceiverRecentSection extends StatelessWidget {
           itemCount: recentPosts.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 0.68,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.60, // কন্ডিশন ফিল্ডের জন্য রেশিও কিছুটা কমানো হয়েছে
           ),
           itemBuilder: (context, index) {
             final post = recentPosts[index];
@@ -269,14 +314,16 @@ class ReceiverRecentSection extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        // Adaptive background color
         color: isDark ? AppColor.gray.withOpacity(0.1) : AppColor.white,
         borderRadius: BorderRadius.circular(15),
-        border: isDark ? Border.all(color: AppColor.gray.withOpacity(0.2), width: 0.5) : null,
+        border: Border.all(
+            color: isDark ? AppColor.white.withOpacity(0.05) : AppColor.gray.withOpacity(0.1),
+            width: 1
+        ),
         boxShadow: isDark ? [] : [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
               offset: const Offset(0, 4)
           ),
         ],
@@ -284,7 +331,7 @@ class ReceiverRecentSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image Section
+          // --- ইমেজ সেকশন ---
           Expanded(
             flex: 4,
             child: Stack(
@@ -298,29 +345,23 @@ class ReceiverRecentSection extends StatelessWidget {
                         ? Image.network(
                         post.imageUrls.first,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
-                            Icons.fastfood,
-                            color: isDark ? AppColor.white.withOpacity(0.3) : AppColor.gray
-                        )
+                        errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.fastfood, size: 30))
                     )
-                        : Icon(
-                        Icons.fastfood,
-                        color: isDark ? AppColor.white.withOpacity(0.3) : AppColor.gray,
-                        size: 30
-                    ),
+                        : const Center(child: Icon(Icons.fastfood, size: 30)),
                   ),
                 ),
+                // Food Type Badge
                 Positioned(
                   top: 8, left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(
-                        color: AppColor.primary.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(8)
+                        color: post.foodType?.toLowerCase() == "vegetarian" ? Colors.green : Colors.redAccent,
+                        borderRadius: BorderRadius.circular(6)
                     ),
-                    child: const Text(
-                        "New",
-                        style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)
+                    child: Text(
+                        post.foodType ?? "Food",
+                        style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)
                     ),
                   ),
                 ),
@@ -328,38 +369,56 @@ class ReceiverRecentSection extends StatelessWidget {
             ),
           ),
 
-          // Details Section
+          // --- ডিটেইলস সেকশন ---
           Expanded(
-            flex: 6,
+            flex: 7,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 1. Food Name
                   Text(
                       post.foodName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 14,
                         color: isDark ? AppColor.white : AppColor.black,
                       )
                   ),
-                  const SizedBox(height: 6),
 
-                  _infoItem(context, Icons.group_outlined, "For: ${post.quantity} Person"),
+                  // 2. Food Condition (Freshly Cooked)
+                  Text(
+                    post.foodCondition ?? "Freshly Cooked",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColor.green,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // 3. Info Items
+                  _infoItem(context, Icons.inventory_2_outlined, "Quantity: ${post.quantity}"),
+                  _infoItem(context, Icons.group_outlined, "For: ${post.estimatePersons} Person"),
                   _infoItem(context, Icons.timer_outlined, "Pickup: ${post.pickupTime}"),
                   _infoItem(context, Icons.location_on_outlined, post.pickupAddress),
 
                   const Spacer(),
 
+                  // 4. Request Button
                   SizedBox(
                     width: double.infinity,
-                    height: 32,
+                    height: 34,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.primary,
+                        backgroundColor: AppColor.green,
+                        foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
@@ -373,7 +432,7 @@ class ReceiverRecentSection extends StatelessWidget {
                       )
                           : const Text(
                           "Request Now",
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)
                       ),
                     ),
                   ),
@@ -389,11 +448,11 @@ class ReceiverRecentSection extends StatelessWidget {
   Widget _infoItem(BuildContext context, IconData icon, String text) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Row(
         children: [
-          Icon(icon, size: 12, color: AppColor.primary.withOpacity(0.7)),
-          const SizedBox(width: 5),
+          Icon(icon, size: 12, color: AppColor.green.withOpacity(0.8)),
+          const SizedBox(width: 6),
           Expanded(
             child: Text(
                 text,

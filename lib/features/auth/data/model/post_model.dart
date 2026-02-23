@@ -688,6 +688,7 @@ class PostModel {
   final Timestamp? createdAt;
   final String deliveryType;
 
+
   // 🔹 এই দুইটা পরিবর্তনযোগ্য রাখা হয়েছে প্রোভাইডারের ডাটা ইনজেকশনের জন্য
   String status;
   String deliveryStatus;

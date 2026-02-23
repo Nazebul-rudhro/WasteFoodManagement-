@@ -1,3 +1,4 @@
+//
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:provider/provider.dart';
@@ -31,27 +32,22 @@
 //       String dStatus = data['deliverystatus'] ?? "none";
 //       String volunteerName = data['volunteerName'] ?? "A volunteer";
 //
-//       // ✅ Time Formatting
 //       String timeStr = "Just now";
 //       if (data['createdAt'] != null) {
 //         DateTime date = (data['createdAt'] as Timestamp).toDate();
 //         timeStr = timeago.format(date, locale: 'en_short');
 //       }
 //
-//       // ✅ 1. Food Name Fetch
 //       var postDoc = await _firestore.collection('posts').doc(data['postId']).get();
 //       String foodName = postDoc.exists ? (postDoc.data()?['foodName'] ?? "Food Item") : "Deleted Post";
 //
-//       // ✅ 2. Receiver Name Fetch
 //       var userDoc = await _firestore.collection('accounts').doc(data['receiverId']).get();
 //       String receiverName = userDoc.exists
 //           ? (userDoc.data()?['profile']?['contactPerson'] ?? "Receiver")
 //           : "someone";
 //
-//       // ✅ 3. Check for Volunteer Interest
 //       var volunteerBids = await _firestore.collection('requests').doc(requestId).collection('pickup_requests').get();
 //
-//       // --- Full User Friendly Messaging ---
 //       String displayTitle = "";
 //       String displayBody = "";
 //
@@ -103,16 +99,25 @@
 //   Widget build(BuildContext context) {
 //     final auth = context.watch<GenericAuthProvider>();
 //     final donorPro = context.read<DonorProvider>();
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 //
 //     if (auth.user == null) return const Scaffold(body: Center(child: Text("Please Login")));
 //
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       // 🟢 ব্যাকগ্রাউন্ড কালার ডার্ক মোড অনুযায়ী অ্যাডাপ্টিভ
+//       backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
 //       appBar: AppBar(
-//         title:  Text("Notifications", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
-//         elevation: 0.5,
-//         backgroundColor: AppColor.soft_green,
-//         iconTheme: const IconThemeData(color: Colors.black87),
+//         title: Text(
+//             "Notifications",
+//             style: TextStyle(
+//                 color: isDark ? Colors.white : Colors.black87,
+//                 fontWeight: FontWeight.bold,
+//                 fontSize: 18
+//             )
+//         ),
+//         elevation: isDark ? 0 : 0.5,
+//         backgroundColor: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
+//         iconTheme: IconThemeData(color: isDark ? Colors.white : Colors.black87),
 //       ),
 //       body: StreamBuilder<QuerySnapshot>(
 //         stream: _firestore
@@ -121,13 +126,19 @@
 //             .snapshots(),
 //         builder: (context, snapshot) {
 //           if (snapshot.hasError) return const Center(child: Text("Connection Error"));
-//           if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-//
-//           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//             return const Center(child: Text("No notifications yet", style: TextStyle(color: Colors.grey)));
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator(color: AppColor.green));
 //           }
 //
-//           // sorting locally to avoid index errors
+//           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+//             return Center(
+//                 child: Text(
+//                     "No notifications yet",
+//                     style: TextStyle(color: isDark ? Colors.white30 : Colors.grey)
+//                 )
+//             );
+//           }
+//
 //           final sortedDocs = snapshot.data!.docs.toList();
 //           sortedDocs.sort((a, b) {
 //             Timestamp t1 = a['createdAt'] ?? Timestamp.now();
@@ -139,7 +150,7 @@
 //             future: _processNotificationData(sortedDocs),
 //             builder: (context, fSnapshot) {
 //               if (fSnapshot.connectionState == ConnectionState.waiting) {
-//                 return const Center(child: CircularProgressIndicator());
+//                 return const Center(child: CircularProgressIndicator(color: AppColor.green));
 //               }
 //
 //               return SingleChildScrollView(
@@ -153,7 +164,10 @@
 //                         final item = fSnapshot.data!.firstWhere((x) => x.id == id);
 //                         if (item.status == 'approved') {
 //                           ScaffoldMessenger.of(context).showSnackBar(
-//                               const SnackBar(content: Text("Please assign a volunteer from the Delivery section."))
+//                               SnackBar(
+//                                   backgroundColor: isDark ? Colors.grey[900] : Colors.black87,
+//                                   content: const Text("Please assign a volunteer from the Delivery section.")
+//                               )
 //                           );
 //                         } else {
 //                           await donorPro.handleRequest(id, item.postId, 'approved');
@@ -200,98 +214,26 @@ class DonorNotificationScreen extends StatefulWidget {
 class _DonorNotificationScreenState extends State<DonorNotificationScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<NotificationModel>> _processNotificationData(List<DocumentSnapshot> docs) async {
-    List<NotificationModel> formattedList = [];
-
-    for (var doc in docs) {
-      final data = doc.data() as Map<String, dynamic>;
-      String requestId = doc.id;
-      String status = data['status'] ?? "pending";
-      String dStatus = data['deliverystatus'] ?? "none";
-      String volunteerName = data['volunteerName'] ?? "A volunteer";
-
-      String timeStr = "Just now";
-      if (data['createdAt'] != null) {
-        DateTime date = (data['createdAt'] as Timestamp).toDate();
-        timeStr = timeago.format(date, locale: 'en_short');
-      }
-
-      var postDoc = await _firestore.collection('posts').doc(data['postId']).get();
-      String foodName = postDoc.exists ? (postDoc.data()?['foodName'] ?? "Food Item") : "Deleted Post";
-
-      var userDoc = await _firestore.collection('accounts').doc(data['receiverId']).get();
-      String receiverName = userDoc.exists
-          ? (userDoc.data()?['profile']?['contactPerson'] ?? "Receiver")
-          : "someone";
-
-      var volunteerBids = await _firestore.collection('requests').doc(requestId).collection('pickup_requests').get();
-
-      String displayTitle = "";
-      String displayBody = "";
-
-      if (status == 'pending') {
-        displayTitle = "Food Request";
-        displayBody = "$receiverName requested for your '$foodName'";
-      }
-      else if (status == 'approved' && volunteerBids.docs.isNotEmpty) {
-        displayTitle = "Volunteer Interested";
-        displayBody = "${volunteerBids.docs.length} volunteer(s) want to pick up '$foodName' for $receiverName";
-      }
-      else if (status == 'delivered' && dStatus == 'pending') {
-        displayTitle = "Assigned to Volunteer";
-        displayBody = "Waiting for $volunteerName to pick up '$foodName'";
-      }
-      else if (dStatus == 'ongoing') {
-        displayTitle = "On the way";
-        displayBody = "$volunteerName has picked up '$foodName' and is going to $receiverName";
-      }
-      else if (dStatus == 'completed') {
-        displayTitle = "Delivery Completed";
-        displayBody = "$volunteerName successfully delivered '$foodName' to $receiverName";
-      }
-      else if (status == 'rejected') {
-        displayTitle = "Request Rejected";
-        displayBody = "You rejected $receiverName's request for '$foodName'";
-      }
-      else {
-        displayTitle = "Update: $foodName";
-        displayBody = "Status: ${status.toUpperCase()}";
-      }
-
-      formattedList.add(
-        NotificationModel(
-          id: requestId,
-          message: displayTitle,
-          requestBy: displayBody,
-          time: timeStr,
-          receiverId: data['receiverId'] ?? "",
-          postId: data['postId'] ?? "",
-          status: status,
-        ),
-      );
-    }
-    return formattedList;
-  }
-
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<GenericAuthProvider>();
-    final donorPro = context.read<DonorProvider>();
+    // donorPro ব্যবহার না করলে এটি সরিয়ে ফেলতে পারেন
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    if (auth.user == null) return const Scaffold(body: Center(child: Text("Please Login")));
+    if (auth.user == null) {
+      return const Scaffold(body: Center(child: Text("Please Login")));
+    }
 
     return Scaffold(
-      // 🟢 ব্যাকগ্রাউন্ড কালার ডার্ক মোড অনুযায়ী অ্যাডাপ্টিভ
       backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
         title: Text(
-            "Notifications",
-            style: TextStyle(
-                color: isDark ? Colors.white : Colors.black87,
-                fontWeight: FontWeight.bold,
-                fontSize: 18
-            )
+          "Notifications",
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         elevation: isDark ? 0 : 0.5,
         backgroundColor: isDark ? const Color(0xFF1E1E1E) : AppColor.soft_green,
@@ -299,67 +241,69 @@ class _DonorNotificationScreenState extends State<DonorNotificationScreen> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore
-            .collection('requests')
-            .where('donorId', isEqualTo: auth.user!.uid)
+            .collection('notifications')
+            .where('targetId', isEqualTo: auth.user!.uid)
+            .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) return const Center(child: Text("Connection Error"));
+          if (snapshot.hasError) {
+            debugPrint("Firestore Error: ${snapshot.error}");
+            // 💡 টিপস: কনসোলে একটি লিঙ্ক পাবেন, সেখানে ক্লিক করে ইনডেক্স তৈরি করে নিন।
+            return Center(child: Text("Error: ${snapshot.error.toString().contains('index') ? 'Need to create Firestore Index' : 'Something went wrong'}"));
+          }
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator(color: AppColor.green));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Text(
-                    "No notifications yet",
-                    style: TextStyle(color: isDark ? Colors.white30 : Colors.grey)
-                )
+              child: Text(
+                "No notifications yet",
+                style: TextStyle(color: isDark ? Colors.white30 : Colors.grey),
+              ),
             );
           }
 
-          final sortedDocs = snapshot.data!.docs.toList();
-          sortedDocs.sort((a, b) {
-            Timestamp t1 = a['createdAt'] ?? Timestamp.now();
-            Timestamp t2 = b['createdAt'] ?? Timestamp.now();
-            return t2.compareTo(t1);
-          });
+          // ডাটা ফরম্যাটিং
+          List<NotificationModel> notifications = snapshot.data!.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
 
-          return FutureBuilder<List<NotificationModel>>(
-            future: _processNotificationData(sortedDocs),
-            builder: (context, fSnapshot) {
-              if (fSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(color: AppColor.green));
-              }
+            String timeStr = "Just now";
+            if (data['createdAt'] != null && data['createdAt'] is Timestamp) {
+              DateTime date = (data['createdAt'] as Timestamp).toDate();
+              timeStr = timeago.format(date, locale: 'en_short');
+            }
 
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: BaseScreen(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: NotificationSection(
-                      notifications: fSnapshot.data!,
-                      onApprove: (id) async {
-                        final item = fSnapshot.data!.firstWhere((x) => x.id == id);
-                        if (item.status == 'approved') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  backgroundColor: isDark ? Colors.grey[900] : Colors.black87,
-                                  content: const Text("Please assign a volunteer from the Delivery section.")
-                              )
-                          );
-                        } else {
-                          await donorPro.handleRequest(id, item.postId, 'approved');
-                        }
-                      },
-                      onReject: (id) async {
-                        final item = fSnapshot.data!.firstWhere((x) => x.id == id);
-                        await donorPro.handleRequest(id, item.postId, 'rejected');
-                      },
-                    ),
-                  ),
+            return NotificationModel(
+              id: doc.id,
+              // টাইটেল হিসেবে টাইপ দেখাচ্ছি
+              message: data['type']?.toString().toUpperCase() ?? "NOTIFICATION",
+              // মেইন মেসেজ বডি
+              requestBy: data['message'] ?? "No message content",
+              time: timeStr,
+              receiverId: data['senderId'] ?? "",
+              postId: data['postId'] ?? "",
+              status: data['type'] ?? "info",
+            );
+          }).toList();
+
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: BaseScreen(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: NotificationSection(
+                  notifications: notifications,
+                  onApprove: (id) {
+                    // এখানে নোটিফিকেশন ক্লিক বা অ্যাপ্রুভ লজিক দিন
+                  },
+                  onReject: (id) {
+                    // রিজেক্ট লজিক
+                  },
                 ),
-              );
-            },
+              ),
+            ),
           );
         },
       ),
