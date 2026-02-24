@@ -384,6 +384,205 @@
 
 
 
+//
+//
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:provider/provider.dart';
+// import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
+// import '../../../../../../../../core/constants/app_colors.dart';
+// import '../../../../../../../auth/data/model/post_model.dart';
+// import '../../provider/receiver_provider.dart';
+//
+// class ReceiverAllPost extends StatefulWidget {
+//   const ReceiverAllPost({super.key});
+//
+//   @override
+//   State<ReceiverAllPost> createState() => _ReceiverAllPostState();
+// }
+//
+// class _ReceiverAllPostState extends State<ReceiverAllPost> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.microtask(() => context.read<ReceiverProvider>().fetchAllPosts());
+//   }
+//
+//   bool isPostValid(PostModel post) {
+//     final now = DateTime.now();
+//     if (post.status != 'available') return false;
+//     if (post.expiryDate != null) return post.expiryDate!.isAfter(now);
+//     return true;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final provider = context.watch<ReceiverProvider>();
+//
+//     return Scaffold(
+//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//       appBar: AppBar(
+//         backgroundColor: AppColor.green,
+//         title: const Text("Available Food Near You",
+//             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+//         centerTitle: true,
+//         iconTheme: const IconThemeData(color: Colors.white),
+//       ),
+//       body: BaseScreen(
+//         child: StreamBuilder<QuerySnapshot>(
+//           stream: FirebaseFirestore.instance
+//               .collection('posts')
+//               .where('status', isEqualTo: 'available')
+//               .snapshots(),
+//           builder: (context, snapshot) {
+//             if (snapshot.connectionState == ConnectionState.waiting) {
+//               return const Center(child: CircularProgressIndicator(color: AppColor.green));
+//             }
+//             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+//               return _emptyView("No food available right now");
+//             }
+//
+//             // মডেল এ রূপান্তর এবং ফিল্টারিং
+//             final posts = snapshot.data!.docs.map((doc) => PostModel.fromSnapshot(doc)).where((post) {
+//               return !provider.myRequestIds.contains(post.postId) && isPostValid(post);
+//             }).toList();
+//
+//             // সর্টিং (টাইমস্ট্যাম্প টু ডেটটাইম)
+//             posts.sort((a, b) {
+//               final DateTime dateA = a.createdAt?.toDate() ?? DateTime(2000);
+//               final DateTime dateB = b.createdAt?.toDate() ?? DateTime(2000);
+//               return dateB.compareTo(dateA);
+//             });
+//
+//             if (posts.isEmpty) return _emptyView("All items are already requested");
+//
+//             // ✅ এখানে ListView ব্যবহার করা হয়েছে যা ১টি করে শো করবে
+//             return ListView.separated(
+//               padding: const EdgeInsets.all(16),
+//               itemCount: posts.length,
+//               physics: const BouncingScrollPhysics(),
+//               separatorBuilder: (context, index) => const SizedBox(height: 16),
+//               itemBuilder: (context, index) {
+//                 final post = posts[index];
+//                 final isLoading = provider.isRequesting[post.postId] ?? false;
+//
+//                 // ১টি করে আইটেম নিশ্চিত করতে উইডথ double.infinity করা হয়েছে
+//                 return _buildFullCard(context, post, isLoading, provider);
+//               },
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildFullCard(BuildContext context, PostModel post, bool isLoading, ReceiverProvider provider) {
+//     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+//
+//     return Container(
+//       width: MediaQuery.of(context).size.width, // স্ক্রিনের পুরো প্রস্থ নিবে
+//       decoration: BoxDecoration(
+//         color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+//         borderRadius: BorderRadius.circular(15),
+//         boxShadow: isDark ? [] : [
+//           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // ইমেজ সেকশন
+//           ClipRRect(
+//             borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+//             child: post.imageUrls.isNotEmpty
+//                 ? Image.network(
+//               post.imageUrls.first,
+//               height: 200,
+//               width: double.infinity,
+//               fit: BoxFit.cover,
+//               errorBuilder: (context, error, stackTrace) => Container(
+//                   height: 200, color: Colors.grey[300], child: const Icon(Icons.broken_image)
+//               ),
+//             )
+//                 : Container(height: 200, color: Colors.grey[200], child: const Icon(Icons.fastfood, size: 50)),
+//           ),
+//
+//           Padding(
+//             padding: const EdgeInsets.all(16),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // নাম এবং ব্যাজ
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Expanded(
+//                       child: Text(post.foodName,
+//                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+//                     ),
+//                     _badge(post.foodType, post.foodType.toLowerCase() == "vegetarian" ? Colors.green : Colors.red),
+//                   ],
+//                 ),
+//                 const SizedBox(height: 4),
+//                 // কন্ডিশন
+//                 Text(post.foodCondition,
+//                     style: const TextStyle(color: AppColor.green, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500)),
+//
+//                 const Divider(height: 24),
+//
+//                 // ইনফরমেশন রো
+//                 _infoLarge(Icons.inventory_2_outlined, "Quantity: ${post.quantity}"),
+//                 _infoLarge(Icons.people_alt_outlined, "Estimate: For ${post.estimatePersons} People"),
+//                 _infoLarge(Icons.location_on_outlined, post.pickupAddress),
+//                 _infoLarge(Icons.access_time, "Pickup: ${post.pickupTime}"),
+//
+//                 const SizedBox(height: 20),
+//
+//                 // বাটন
+//                 SizedBox(
+//                   width: double.infinity,
+//                   height: 50,
+//                   child: ElevatedButton(
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: AppColor.green,
+//                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//                       elevation: 0,
+//                     ),
+//                     onPressed: isLoading ? null : () => provider.sendRequest(post.postId, post.donorId),
+//                     child: isLoading
+//                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+//                         : const Text("Request Now", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+//                   ),
+//                 )
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _badge(String text, Color color) => Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+//       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
+//       child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)));
+//
+//   Widget _infoLarge(IconData icon, String text) => Padding(
+//       padding: const EdgeInsets.only(bottom: 8),
+//       child: Row(children: [Icon(icon, size: 18, color: AppColor.green), const SizedBox(width: 10), Expanded(child: Text(text, style: const TextStyle(fontSize: 14)))]));
+//
+//   Widget _emptyView(String msg) => Center(
+//     child: Column(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         Icon(Icons.no_food, size: 64, color: Colors.grey[400]),
+//         const SizedBox(height: 16),
+//         Text(msg, style: const TextStyle(color: Colors.grey, fontSize: 16)),
+//       ],
+//     ),
+//   );
+// }
+
 
 
 import 'package:flutter/material.dart';
@@ -391,6 +590,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
 import '../../../../../../../../core/constants/app_colors.dart';
+import '../../../../../../../../services/notification_service.dart';
 import '../../../../../../../auth/data/model/post_model.dart';
 import '../../provider/receiver_provider.dart';
 
@@ -418,11 +618,13 @@ class _ReceiverAllPostState extends State<ReceiverAllPost> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<ReceiverProvider>();
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
       appBar: AppBar(
         backgroundColor: AppColor.green,
+        elevation: 0,
         title: const Text("Available Food Near You",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
@@ -439,34 +641,29 @@ class _ReceiverAllPostState extends State<ReceiverAllPost> {
               return const Center(child: CircularProgressIndicator(color: AppColor.green));
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return _emptyView("No food available right now");
+              return _emptyView("No food available right now", isDark);
             }
 
-            // মডেল এ রূপান্তর এবং ফিল্টারিং
             final posts = snapshot.data!.docs.map((doc) => PostModel.fromSnapshot(doc)).where((post) {
               return !provider.myRequestIds.contains(post.postId) && isPostValid(post);
             }).toList();
 
-            // সর্টিং (টাইমস্ট্যাম্প টু ডেটটাইম)
             posts.sort((a, b) {
               final DateTime dateA = a.createdAt?.toDate() ?? DateTime(2000);
               final DateTime dateB = b.createdAt?.toDate() ?? DateTime(2000);
               return dateB.compareTo(dateA);
             });
 
-            if (posts.isEmpty) return _emptyView("All items are already requested");
+            if (posts.isEmpty) return _emptyView("All items are already requested", isDark);
 
-            // ✅ এখানে ListView ব্যবহার করা হয়েছে যা ১টি করে শো করবে
             return ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               itemCount: posts.length,
               physics: const BouncingScrollPhysics(),
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) => const SizedBox(height: 20),
               itemBuilder: (context, index) {
                 final post = posts[index];
                 final isLoading = provider.isRequesting[post.postId] ?? false;
-
-                // ১টি করে আইটেম নিশ্চিত করতে উইডথ double.infinity করা হয়েছে
                 return _buildFullCard(context, post, isLoading, provider);
               },
             );
@@ -478,80 +675,103 @@ class _ReceiverAllPostState extends State<ReceiverAllPost> {
 
   Widget _buildFullCard(BuildContext context, PostModel post, bool isLoading, ReceiverProvider provider) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: MediaQuery.of(context).size.width, // স্ক্রিনের পুরো প্রস্থ নিবে
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        color: isDark ? AppColor.gray.withOpacity(0.1) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: isDark ? [] : [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))
+          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 15, offset: const Offset(0, 8))
         ],
+        border: isDark ? Border.all(color: Colors.white10, width: 0.5) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ইমেজ সেকশন
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            child: post.imageUrls.isNotEmpty
-                ? Image.network(
-              post.imageUrls.first,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                  height: 200, color: Colors.grey[300], child: const Icon(Icons.broken_image)
+          // ইমেজ সেকশন (Responsive Height)
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                child: post.imageUrls.isNotEmpty
+                    ? Image.network(
+                  post.imageUrls.first,
+                  height: screenWidth < 360 ? 160 : 200, // ছোট ফোনে ইমেজ ছোট হবে
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                      height: 200, color: Colors.grey[300], child: const Icon(Icons.broken_image)),
+                )
+                    : Container(height: 200, color: Colors.grey[200], child: const Icon(Icons.fastfood, size: 50)),
               ),
-            )
-                : Container(height: 200, color: Colors.grey[200], child: const Icon(Icons.fastfood, size: 50)),
+              Positioned(
+                top: 12, right: 12,
+                child: _badge(post.foodType, post.foodType.toLowerCase() == "vegetarian" ? Colors.green : Colors.redAccent),
+              ),
+            ],
           ),
 
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // নাম এবং ব্যাজ
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Text(post.foodName,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black)),
+                const SizedBox(height: 4),
+                Text(post.foodCondition ?? "Good Condition",
+                    style: const TextStyle(color: AppColor.green, fontSize: 13, fontWeight: FontWeight.w600)),
+
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Divider(height: 1, thickness: 0.5),
+                ),
+
+                // ইনফরমেশন গ্রিড (ছোট স্ক্রিনে যাতে এরর না দেয়)
+                Wrap(
+                  runSpacing: 10,
+                  spacing: 20,
                   children: [
-                    Expanded(
-                      child: Text(post.foodName,
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    _badge(post.foodType, post.foodType.toLowerCase() == "vegetarian" ? Colors.green : Colors.red),
+                    _infoLarge(Icons.inventory_2_outlined, "Qty: ${post.quantity}"),
+                    _infoLarge(Icons.people_alt_outlined, "For: ${post.estimatePersons} People"),
+                    _infoLarge(Icons.access_time, post.pickupTime ?? "N/A"),
                   ],
                 ),
-                const SizedBox(height: 4),
-                // কন্ডিশন
-                Text(post.foodCondition,
-                    style: const TextStyle(color: AppColor.green, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500)),
-
-                const Divider(height: 24),
-
-                // ইনফরমেশন রো
-                _infoLarge(Icons.inventory_2_outlined, "Quantity: ${post.quantity}"),
-                _infoLarge(Icons.people_alt_outlined, "Estimate: For ${post.estimatePersons} People"),
+                const SizedBox(height: 12),
                 _infoLarge(Icons.location_on_outlined, post.pickupAddress),
-                _infoLarge(Icons.access_time, "Pickup: ${post.pickupTime}"),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
-                // বাটন
+                // রিকোয়েস্ট বাটন
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.green,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       elevation: 0,
                     ),
-                    onPressed: isLoading ? null : () => provider.sendRequest(post.postId, post.donorId),
+                    onPressed: isLoading ? null : () async {
+                      // ১. ডাটাবেজ আপডেট
+                      await provider.sendRequest(post.postId, post.donorId);
+
+                      // ২. নোটিফিকেশন পাঠানো ✅
+                      NotificationService.sendNewRequestNotification(
+                          donorId: post.donorId,
+                          foodName: post.foodName,
+                          postId: post.postId
+                      );
+                    },
                     child: isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text("Request Now", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                        : const Text("Confirm Request", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   ),
                 )
               ],
@@ -563,21 +783,26 @@ class _ReceiverAllPostState extends State<ReceiverAllPost> {
   }
 
   Widget _badge(String text, Color color) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)));
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),
+      child: Text(text.toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.5)));
 
-  Widget _infoLarge(IconData icon, String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(children: [Icon(icon, size: 18, color: AppColor.green), const SizedBox(width: 10), Expanded(child: Text(text, style: const TextStyle(fontSize: 14)))]));
+  Widget _infoLarge(IconData icon, String text) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 18, color: AppColor.green.withOpacity(0.8)),
+      const SizedBox(width: 8),
+      Text(text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+    ],
+  );
 
-  Widget _emptyView(String msg) => Center(
+  Widget _emptyView(String msg, bool isDark) => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.no_food, size: 64, color: Colors.grey[400]),
+        Icon(Icons.no_food_rounded, size: 80, color: isDark ? Colors.white24 : Colors.grey[300]),
         const SizedBox(height: 16),
-        Text(msg, style: const TextStyle(color: Colors.grey, fontSize: 16)),
+        Text(msg, style: TextStyle(color: isDark ? Colors.white54 : Colors.grey, fontSize: 16, fontWeight: FontWeight.w500)),
       ],
     ),
   );

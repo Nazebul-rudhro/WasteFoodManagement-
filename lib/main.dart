@@ -366,6 +366,105 @@
 //     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
 //   });
 // }
+//
+// import 'dart:async';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:waste_food_management/services/notification_service.dart';
+//
+// import 'app/app.dart';
+// import 'firebase_options.dart';
+// import 'features/auth/provider/generic_auth_provider.dart';
+// import 'features/auth/provider/theme_notifier.dart';
+// import 'features/home/presentation/screens/donor/presentation/provider/donor_provider.dart';
+// import 'features/home/presentation/screens/receiver/presentation/provider/receiver_provider.dart';
+// import 'features/home/presentation/screens/volunteer/presentation/provider/volunteer_provider.dart';
+//
+// // ব্যাকগ্রাউন্ড হ্যান্ডলার (অবশ্যই টপ লেভেল হতে হবে)
+// @pragma('vm:entry-point')
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   debugPrint("Handling a background message: ${message.messageId}");
+//   // ব্যাকগ্রাউন্ডে ডাটা মেসেজ আসলে ডিসপ্লে করবে
+//   // NotificationService.display(message);
+// }
+//
+// void main() async {
+//   runZonedGuarded(() async {
+//     WidgetsFlutterBinding.ensureInitialized();
+//
+//     // ফায়ারবেস ইনিশিয়ালাইজ
+//     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//
+//     // ১. নোটিফিকেশন সার্ভিস ইনিশিয়ালাইজ
+//     // await NotificationService.initialize();
+//
+//     // ২. ব্যাকগ্রাউন্ড মেসেজ লিসেনার
+//     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+//
+//     FirebaseMessaging messaging = FirebaseMessaging.instance;
+//
+//     // পারমিশন রিকোয়েস্ট (iOS এবং Android 13+)
+//     NotificationSettings settings = await messaging.requestPermission(
+//       alert: true,
+//       badge: true,
+//       sound: true,
+//     );
+//
+//     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+//       debugPrint('User granted permission');
+//     }
+//
+//     // টোকেন প্রিন্ট করুন (টেস্ট করার জন্য দরকার হবে)
+//     String? token = await messaging.getToken();
+//     debugPrint("FCM Token: $token");
+//
+//     // // ৩. ফোরগ্রাউন্ড (Foreground) মেসেজ লিসেনার
+//     // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+//     //   debugPrint("Foreground message received!");
+//     //   NotificationService.display(message);
+//     // });
+//
+//     // ৪. অ্যাপ ব্যাকগ্রাউন্ডে থাকলে নোটিফিকেশনে ক্লিক করলে যা হবে
+//     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+//       debugPrint("Notification clicked from background state!");
+//     });
+//
+//     // ৫. টার্মিনেটেড স্টেট থেকে অ্যাপ ওপেন হলে
+//     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+//       if (message != null) {
+//         debugPrint("Opened from terminated state via FCM");
+//       }
+//     });
+//
+//     // ক্র্যাশলিটিক্স সেটআপ
+//     FlutterError.onError = (details) {
+//       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+//     };
+//
+//     runApp(
+//       MultiProvider(
+//         providers: [
+//           ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+//           ChangeNotifierProvider(create: (_) => GenericAuthProvider()),
+//           ChangeNotifierProvider(create: (_) => DonorProvider()),
+//           ChangeNotifierProvider(create: (_) => ReceiverProvider()),
+//           ChangeNotifierProvider(create: (_) => VolunteerProvider()),
+//         ],
+//         child: const WasteFoodManagementApp(),
+//       ),
+//     );
+//   }, (error, stack) {
+//     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+//   });
+// }
+
+
+
+
 
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
@@ -373,7 +472,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waste_food_management/services/notification_service.dart';
+import 'package:waste_food_management/services/notification_service.dart'; // আপনার পাথ
 
 import 'app/app.dart';
 import 'firebase_options.dart';
@@ -383,64 +482,42 @@ import 'features/home/presentation/screens/donor/presentation/provider/donor_pro
 import 'features/home/presentation/screens/receiver/presentation/provider/receiver_provider.dart';
 import 'features/home/presentation/screens/volunteer/presentation/provider/volunteer_provider.dart';
 
-// ব্যাকগ্রাউন্ড হ্যান্ডলার (অবশ্যই টপ লেভেল হতে হবে)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  debugPrint("Handling a background message: ${message.messageId}");
-  // ব্যাকগ্রাউন্ডে ডাটা মেসেজ আসলে ডিসপ্লে করবে
-  NotificationService.display(message);
+  // ব্যাকগ্রাউন্ডে পপ-আপ সিস্টেম অটোমেটিক কাজ করে যদি notification অবজেক্ট থাকে
 }
 
 void main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // ফায়ারবেস ইনিশিয়ালাইজ
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-    // ১. নোটিফিকেশন সার্ভিস ইনিশিয়ালাইজ
+    // ১. নোটিফিকেশন সার্ভিস ইনিশিয়ালাইজ (পপ-আপ এর জন্য)
     await NotificationService.initialize();
 
-    // ২. ব্যাকগ্রাউন্ড মেসেজ লিসেনার
+    // ২. ব্যাকগ্রাউন্ড লিসেনার
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    // পারমিশন রিকোয়েস্ট (iOS এবং Android 13+)
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    // ৩. পারমিশন রিকোয়েস্ট
+    await messaging.requestPermission(alert: true, badge: true, sound: true);
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('User granted permission');
-    }
-
-    // টোকেন প্রিন্ট করুন (টেস্ট করার জন্য দরকার হবে)
-    String? token = await messaging.getToken();
-    debugPrint("FCM Token: $token");
-
-    // ৩. ফোরগ্রাউন্ড (Foreground) মেসেজ লিসেনার
+    // ৪. ফোরগ্রাউন্ড (Foreground) মেসেজ লিসেনার
+    // অ্যাপ খোলা থাকা অবস্থায় মেসেজ আসলে এই লজিক পপ-আপ দেখাবে
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint("Foreground message received!");
-      NotificationService.display(message);
+      NotificationService.displayPopup(message);
     });
 
-    // ৪. অ্যাপ ব্যাকগ্রাউন্ডে থাকলে নোটিফিকেশনে ক্লিক করলে যা হবে
+    // ৫. টার্মিনেটেড স্টেট বা ব্যাকগ্রাউন্ডে ক্লিক করলে যা হবে
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      debugPrint("Notification clicked from background state!");
+      debugPrint("Notification clicked!");
     });
 
-    // ৫. টার্মিনেটেড স্টেট থেকে অ্যাপ ওপেন হলে
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        debugPrint("Opened from terminated state via FCM");
-      }
-    });
-
-    // ক্র্যাশলিটিক্স সেটআপ
+    // ক্র্যাশলিটিক্স
     FlutterError.onError = (details) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(details);
     };

@@ -17,7 +17,7 @@ class ProfileHeader extends StatelessWidget {
         final profile = auth.userData?['profile'];
 
         final String role = auth.selectedRole ?? "User";
-        final String name = profile?['businessOrFullName'] ?? "Complete Profile";
+        final String name = profile?['contactPerson'] ?? "Complete Profile";
         final String email = user?.email ?? "No email";
 
         return Container(

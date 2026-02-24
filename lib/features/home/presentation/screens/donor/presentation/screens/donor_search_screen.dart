@@ -1551,6 +1551,251 @@
 
 
 
+//
+//
+//
+//
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+// import 'package:waste_food_management/core/constants/app_colors.dart';
+// import 'package:waste_food_management/features/home/presentation/sections/base_screen.dart';
+//
+// class DonorSearchScreen extends StatefulWidget {
+//   const DonorSearchScreen({super.key});
+//
+//   @override
+//   State<DonorSearchScreen> createState() => _DonorSearchScreenState();
+// }
+//
+// class _DonorSearchScreenState extends State<DonorSearchScreen> {
+//   String _searchQuery = "";
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: PreferredSize(
+//         preferredSize: const Size.fromHeight(160),
+//         child: AppBar(
+//           backgroundColor: Colors.transparent,
+//           elevation: 0,
+//           flexibleSpace: _buildHeader(),
+//         ),
+//       ),
+//       body: BaseScreen(
+//         child: StreamBuilder<QuerySnapshot>(
+//           // কন্ডিশন: সরাসরি ডাটাবেজ থেকে শুধুমাত্র "available" পোস্টগুলো আনা হচ্ছে
+//           stream: FirebaseFirestore.instance
+//               .collection('posts')
+//               .where('status', isEqualTo: 'available')
+//               .snapshots(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasError) return _buildInfoMessage("Something went wrong");
+//             if (snapshot.connectionState == ConnectionState.waiting) {
+//               return const Center(child: CircularProgressIndicator(color: AppColor.green));
+//             }
+//
+//             final DateTime now = DateTime.now();
+//
+//             // 🚀 ডায়নামিক ফিল্টারিং (Expiry Date + Search)
+//             final filteredDocs = snapshot.data!.docs.where((doc) {
+//               try {
+//                 final data = doc.data() as Map<String, dynamic>;
+//
+//                 // ১. এক্সপায়ারি চেক
+//                 if (data['expiryDate'] != null) {
+//                   DateTime expiry = (data['expiryDate'] as Timestamp).toDate();
+//                   if (expiry.isBefore(now)) return false; // মেয়াদ শেষ হলে দেখাবে না
+//                 }
+//
+//                 // ২. সার্চ চেক
+//                 String foodName = (data['foodName'] ?? "").toString().toLowerCase();
+//                 if (!foodName.contains(_searchQuery)) return false;
+//
+//                 return true;
+//               } catch (e) {
+//                 return false; // কোনো ডাটাতে এরর থাকলে সেই পোস্টটি স্কিপ করবে
+//               }
+//             }).toList();
+//
+//             if (filteredDocs.isEmpty) {
+//               return _buildInfoMessage("No available food found near you.");
+//             }
+//
+//             return ListView.builder(
+//               itemCount: filteredDocs.length,
+//               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//               physics: const BouncingScrollPhysics(),
+//               itemBuilder: (context, index) {
+//                 final data = filteredDocs[index].data() as Map<String, dynamic>;
+//                 return _buildFoodCard(data);
+//               },
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // --- কাস্টম হেডার ---
+//   Widget _buildHeader() {
+//     return Container(
+//       padding: const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 20),
+//       decoration: BoxDecoration(
+//         color: AppColor.green.withOpacity(0.1),
+//         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         mainAxisAlignment: MainAxisAlignment.end,
+//         children: [
+//           const Text("Available Food 🍏", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+//           const SizedBox(height: 15),
+//           TextField(
+//             onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+//             decoration: InputDecoration(
+//               hintText: "Search food name...",
+//               prefixIcon: const Icon(Icons.search, color: AppColor.green),
+//               filled: true,
+//               fillColor: Colors.white,
+//               border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   // --- ফুড কার্ড ডিজাইন ---
+//   Widget _buildFoodCard(Map<String, dynamic> data) {
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 16),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(20),
+//         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+//       ),
+//       child: InkWell(
+//         onTap: () => _showProductDetails(context, data),
+//         borderRadius: BorderRadius.circular(20),
+//         child: Row(
+//           children: [
+//             SizedBox(
+//               width: 110, height: 110,
+//               child: ClipRRect(
+//                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
+//                 child: _buildImage(data['imageUrls']),
+//               ),
+//             ),
+//             Expanded(
+//               child: Padding(
+//                 padding: const EdgeInsets.all(12),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(data['foodName'] ?? "Unnamed", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+//                     const SizedBox(height: 4),
+//                     _buildBadge(data['foodType'] ?? "Food"),
+//                     const SizedBox(height: 8),
+//                     Row(
+//                       children: [
+//                         const Icon(Icons.access_time, size: 14, color: Colors.orange),
+//                         const SizedBox(width: 5),
+//                         Text(data['pickupTime'] ?? 'Anytime', style: const TextStyle(fontSize: 12)),
+//                       ],
+//                     ),
+//                     Row(
+//                       children: [
+//                         const Icon(Icons.location_on_outlined, size: 14, color: Colors.red),
+//                         const SizedBox(width: 5),
+//                         Expanded(child: Text(data['pickupAddress'] ?? 'No Address', style: const TextStyle(fontSize: 12, color: Colors.grey), maxLines: 1, overflow: TextOverflow.ellipsis)),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // --- ডায়নামিক ডিটেইলস পপ-আপ ---
+//   void _showProductDetails(BuildContext context, Map<String, dynamic> data) {
+//     showDialog(
+//       context: context,
+//       builder: (context) => Dialog(
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//         child: SingleChildScrollView(
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               ClipRRect(
+//                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+//                 child: _buildImage(data['imageUrls'], height: 180, width: double.infinity),
+//               ),
+//               Padding(
+//                 padding: const EdgeInsets.all(20),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(data['foodName'] ?? "Details", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+//                     const Divider(height: 25),
+//                     _infoRow(Icons.category, "Category", data['foodType']),
+//                     _infoRow(Icons.health_and_safety, "Condition", data['foodCondition']),
+//                     _infoRow(Icons.timer, "Pickup", data['pickupTime']),
+//                     _infoRow(Icons.location_on, "Address", data['pickupAddress']),
+//                     _infoRow(Icons.notes, "Description", data['description']),
+//                     const SizedBox(height: 20),
+//                     SizedBox(
+//                       width: double.infinity,
+//                       child: ElevatedButton(
+//                         style: ElevatedButton.styleFrom(backgroundColor: AppColor.green, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+//                         onPressed: () => Navigator.pop(context),
+//                         child: const Text("CLOSE", style: TextStyle(color: Colors.white)),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _infoRow(IconData icon, String label, String? value) {
+//     return Padding(
+//       padding: const EdgeInsets.only(bottom: 10),
+//       child: Row(
+//         children: [
+//           Icon(icon, size: 18, color: AppColor.green),
+//           const SizedBox(width: 10),
+//           Expanded(child: Text("$label: ${value ?? 'N/A'}", style: const TextStyle(fontSize: 14))),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildBadge(String label) => Container(
+//     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//     decoration: BoxDecoration(color: AppColor.green.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+//     child: Text(label, style: const TextStyle(color: AppColor.green, fontSize: 10, fontWeight: FontWeight.bold)),
+//   );
+//
+//   Widget _buildImage(dynamic urls, {double? height, double? width}) {
+//     if (urls != null && urls is List && urls.isNotEmpty) {
+//       return Image.network(urls[0], height: height, width: width, fit: BoxFit.cover,
+//           errorBuilder: (c, e, s) => Container(color: Colors.grey[100], child: const Icon(Icons.image_not_supported)));
+//     }
+//     return Container(color: Colors.grey[100], child: const Icon(Icons.fastfood, color: Colors.grey));
+//   }
+//
+//   Widget _buildInfoMessage(String msg) => Center(child: Text(msg, style: const TextStyle(color: Colors.grey)));
+// }
+
 
 
 
@@ -1572,19 +1817,21 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ডার্ক মোড চেক করার জন্য
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(160),
         child: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          flexibleSpace: _buildHeader(),
+          flexibleSpace: _buildHeader(isDark),
         ),
       ),
       body: BaseScreen(
         child: StreamBuilder<QuerySnapshot>(
-          // কন্ডিশন: সরাসরি ডাটাবেজ থেকে শুধুমাত্র "available" পোস্টগুলো আনা হচ্ছে
           stream: FirebaseFirestore.instance
               .collection('posts')
               .where('status', isEqualTo: 'available')
@@ -1597,24 +1844,19 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
 
             final DateTime now = DateTime.now();
 
-            // 🚀 ডায়নামিক ফিল্টারিং (Expiry Date + Search)
             final filteredDocs = snapshot.data!.docs.where((doc) {
               try {
                 final data = doc.data() as Map<String, dynamic>;
-
-                // ১. এক্সপায়ারি চেক
                 if (data['expiryDate'] != null) {
                   DateTime expiry = (data['expiryDate'] as Timestamp).toDate();
-                  if (expiry.isBefore(now)) return false; // মেয়াদ শেষ হলে দেখাবে না
+                  if (expiry.isBefore(now)) return false;
                 }
-
-                // ২. সার্চ চেক
                 String foodName = (data['foodName'] ?? "").toString().toLowerCase();
                 if (!foodName.contains(_searchQuery)) return false;
 
                 return true;
               } catch (e) {
-                return false; // কোনো ডাটাতে এরর থাকলে সেই পোস্টটি স্কিপ করবে
+                return false;
               }
             }).toList();
 
@@ -1628,7 +1870,7 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 final data = filteredDocs[index].data() as Map<String, dynamic>;
-                return _buildFoodCard(data);
+                return _buildFoodCard(data, isDark);
               },
             );
           },
@@ -1637,28 +1879,36 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
     );
   }
 
-  // --- কাস্টম হেডার ---
-  Widget _buildHeader() {
+  // --- ডার্ক মোড ফ্রেন্ডলি হেডার ---
+  Widget _buildHeader(bool isDark) {
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 20),
       decoration: BoxDecoration(
-        color: AppColor.green.withOpacity(0.1),
+        color: AppColor.green.withOpacity(0.15),
         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Text("Available Food 🍏", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+          Text("Available Food 🍏",
+              style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87
+              )),
           const SizedBox(height: 15),
           TextField(
             onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black),
             decoration: InputDecoration(
               hintText: "Search food name...",
+              hintStyle: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey),
               prefixIcon: const Icon(Icons.search, color: AppColor.green),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+              contentPadding: EdgeInsets.zero,
             ),
           ),
         ],
@@ -1666,17 +1916,23 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
     );
   }
 
-  // --- ফুড কার্ড ডিজাইন ---
-  Widget _buildFoodCard(Map<String, dynamic> data) {
+  // --- ডার্ক মোড ফ্রেন্ডলি ফুড কার্ড ---
+  Widget _buildFoodCard(Map<String, dynamic> data, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+              color: isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4)
+          )
+        ],
       ),
       child: InkWell(
-        onTap: () => _showProductDetails(context, data),
+        onTap: () => _showProductDetails(context, data, isDark),
         borderRadius: BorderRadius.circular(20),
         child: Row(
           children: [
@@ -1693,7 +1949,12 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(data['foodName'] ?? "Unnamed", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(data['foodName'] ?? "Unnamed",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: isDark ? Colors.white : Colors.black
+                        )),
                     const SizedBox(height: 4),
                     _buildBadge(data['foodType'] ?? "Food"),
                     const SizedBox(height: 8),
@@ -1701,14 +1962,17 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
                       children: [
                         const Icon(Icons.access_time, size: 14, color: Colors.orange),
                         const SizedBox(width: 5),
-                        Text(data['pickupTime'] ?? 'Anytime', style: const TextStyle(fontSize: 12)),
+                        Text(data['pickupTime'] ?? 'Anytime',
+                            style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.black87)),
                       ],
                     ),
                     Row(
                       children: [
                         const Icon(Icons.location_on_outlined, size: 14, color: Colors.red),
                         const SizedBox(width: 5),
-                        Expanded(child: Text(data['pickupAddress'] ?? 'No Address', style: const TextStyle(fontSize: 12, color: Colors.grey), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                        Expanded(child: Text(data['pickupAddress'] ?? 'No Address',
+                            style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[500] : Colors.grey),
+                            maxLines: 1, overflow: TextOverflow.ellipsis)),
                       ],
                     ),
                   ],
@@ -1721,11 +1985,12 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
     );
   }
 
-  // --- ডায়নামিক ডিটেইলস পপ-আপ ---
-  void _showProductDetails(BuildContext context, Map<String, dynamic> data) {
+  // --- ডার্ক মোড ফ্রেন্ডলি পপ-আপ ---
+  void _showProductDetails(BuildContext context, Map<String, dynamic> data, bool isDark) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: SingleChildScrollView(
           child: Column(
@@ -1740,18 +2005,22 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(data['foodName'] ?? "Details", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                    const Divider(height: 25),
-                    _infoRow(Icons.category, "Category", data['foodType']),
-                    _infoRow(Icons.health_and_safety, "Condition", data['foodCondition']),
-                    _infoRow(Icons.timer, "Pickup", data['pickupTime']),
-                    _infoRow(Icons.location_on, "Address", data['pickupAddress']),
-                    _infoRow(Icons.notes, "Description", data['description']),
+                    Text(data['foodName'] ?? "Details",
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black)),
+                    Divider(height: 25, color: isDark ? Colors.grey[800] : Colors.grey[300]),
+                    _infoRow(Icons.category, "Category", data['foodType'], isDark),
+                    _infoRow(Icons.health_and_safety, "Condition", data['foodCondition'], isDark),
+                    _infoRow(Icons.timer, "Pickup", data['pickupTime'], isDark),
+                    _infoRow(Icons.location_on, "Address", data['pickupAddress'], isDark),
+                    _infoRow(Icons.notes, "Description", data['description'], isDark),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColor.green, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.green,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                        ),
                         onPressed: () => Navigator.pop(context),
                         child: const Text("CLOSE", style: TextStyle(color: Colors.white)),
                       ),
@@ -1766,14 +2035,15 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
     );
   }
 
-  Widget _infoRow(IconData icon, String label, String? value) {
+  Widget _infoRow(IconData icon, String label, String? value, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppColor.green),
           const SizedBox(width: 10),
-          Expanded(child: Text("$label: ${value ?? 'N/A'}", style: const TextStyle(fontSize: 14))),
+          Expanded(child: Text("$label: ${value ?? 'N/A'}",
+              style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[300] : Colors.black87))),
         ],
       ),
     );
@@ -1781,16 +2051,16 @@ class _DonorSearchScreenState extends State<DonorSearchScreen> {
 
   Widget _buildBadge(String label) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    decoration: BoxDecoration(color: AppColor.green.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+    decoration: BoxDecoration(color: AppColor.green.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
     child: Text(label, style: const TextStyle(color: AppColor.green, fontSize: 10, fontWeight: FontWeight.bold)),
   );
 
   Widget _buildImage(dynamic urls, {double? height, double? width}) {
     if (urls != null && urls is List && urls.isNotEmpty) {
       return Image.network(urls[0], height: height, width: width, fit: BoxFit.cover,
-          errorBuilder: (c, e, s) => Container(color: Colors.grey[100], child: const Icon(Icons.image_not_supported)));
+          errorBuilder: (c, e, s) => Container(color: Colors.grey[300], child: const Icon(Icons.image_not_supported)));
     }
-    return Container(color: Colors.grey[100], child: const Icon(Icons.fastfood, color: Colors.grey));
+    return Container(color: Colors.grey[300], child: const Icon(Icons.fastfood, color: Colors.grey));
   }
 
   Widget _buildInfoMessage(String msg) => Center(child: Text(msg, style: const TextStyle(color: Colors.grey)));
